@@ -1,7 +1,7 @@
 import HomePage from "./components/HomePage.jsx";
 
 
-import "./css/App.css";
+import "./css/App.css"
 
 
 function App() {
