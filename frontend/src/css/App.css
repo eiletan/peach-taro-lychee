@@ -12,6 +12,9 @@ body {
     animation: gradientAnimation 15s ease infinite;
 }
 
+.text {
+    font-family: "Gill Sans", sans-serif;
+}
 
 
 @keyframes gradientAnimation {
