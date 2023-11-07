@@ -10,15 +10,19 @@ export default function CardContainer(props) {
     return (
         <div className="container-md card-container">
             <div class="card">
-                <div className="card-header card-container-header text">
-                    {props.header ? props.header : "No card header provided"}
+                <div className="card-header card-container-header">
+                    <span className="text">
+                        {props.header ? props.header : "No card header provided"}
+                    </span>
                 </div>
-                <div className="card-body card-container-body text">
+                <div className="card-body card-container-body">
                     {props.content ? props.content : "No card content provided"}
                 </div>
                 {props.footer ? 
-                <div className="card-footer card-container-footer text">
-                    {props.footer}
+                <div className="card-footer card-container-footer">
+                    <span className="text">
+                        {props.footer}
+                    </span>
                 </div> 
                 : 
                 null}
