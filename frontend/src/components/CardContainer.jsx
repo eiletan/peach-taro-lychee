@@ -10,7 +10,7 @@ export default function CardContainer(props) {
 
     return (
         <div className={props.extraClass ? `container-md card-container ${props.extraClass}` : "container-md card-container"}>
-            <div class="card">
+            <div className="card">
                 <div className="card-header card-container-header">
                     <span className="text">
                         {props.header ? props.header : "No card header provided"}
