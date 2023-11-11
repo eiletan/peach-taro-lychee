@@ -16,6 +16,9 @@ body {
     font-family: "Gill Sans", sans-serif;
 }
 
+.button {
+  margin: 10px;
+}
 
 @keyframes gradientAnimation {
     0% {

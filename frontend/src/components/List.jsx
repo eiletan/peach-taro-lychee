@@ -1,9 +1,8 @@
 import {React, useState, useRef, useEffect} from 'react';
 
 // A component that is a list that can be edited through user input
-// Pass in editing status with props.isEdit - this prop is required
 export default function List(props) {
-    // This state variable controls whether the list can be edited or not, and is determined by props.isEdit
+    // This state variable controls whether the list can be edited or not
     const [isEdit, setIsEdit] = useState(false);
     const [newListItem, setNewListItem] = useState(null);
     const [list,setList] = useState([]);
@@ -11,14 +10,9 @@ export default function List(props) {
     const listRef = useRef();
 
     useEffect(() => {
-        setIsEdit(props.isEdit);
         const uid = generateUID();
         setId(uid);
     },[]);
-
-    useEffect(() => {
-        console.log(list);
-    }, [list]);
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -61,8 +55,11 @@ export default function List(props) {
                 newList.push(item);
             }
         }
-        console.log(newList);
         setList(newList);
+    }
+
+    function saveChanges() {
+        setIsEdit(false);
     }
     
 
@@ -71,7 +68,7 @@ export default function List(props) {
         <div className={props.extraClass ? `container-fluid list-container ${props.extraClass}` : `container-fluid list-container`} ref={listRef}>
             {renderList()}
             {isEdit 
-            && 
+            ? 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor={`${id}-form-input`}>Add item</label>
@@ -84,8 +81,12 @@ export default function List(props) {
                         required>
                     </input>
                 </div>
-                <button type="submit" className="btn btn-primary">Add</button>
-            </form>}
+                <button type="submit" className="btn btn-primary button">Add</button>
+                <br></br>
+                <button type="button" className="btn btn-success button" onClick={() => saveChanges()}>Save Changes</button>
+            </form>
+            :
+            <button type="button" className="btn btn-primary" onClick={() => setIsEdit(true)}>Edit</button>}
         </div>
     );
 }
