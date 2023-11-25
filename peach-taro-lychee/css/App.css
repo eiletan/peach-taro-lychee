@@ -1,0 +1,33 @@
+html, body, #root, .app {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+body {
+    background-size: 400% 400%;
+    text-align: center;
+    background-image: linear-gradient(20deg, midnightblue,tomato);
+    animation: gradientAnimation 15s ease infinite;
+}
+
+.text {
+    font-family: "Gill Sans", sans-serif;
+}
+
+.button {
+  margin: 10px;
+}
+
+@keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+}
