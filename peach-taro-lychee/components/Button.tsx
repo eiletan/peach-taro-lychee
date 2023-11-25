@@ -12,7 +12,7 @@ interface ButtonProps {
 export default function Button(props: ButtonProps) {
     return (
         <div className={props?.extraClass ? `btn-container ${props.extraClass}` : `btn-container`}>
-            <button className={`btn ${props.bgcolor} ${props.color}`} onClick={props.onClick}>{props.text}</button>
+            <button className={`btn rounded-lg ${props.bgcolor} ${props.color}`} onClick={props.onClick}>{props.text}</button>
         </div>
     );
 }
