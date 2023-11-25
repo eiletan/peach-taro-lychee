@@ -1,28 +1,43 @@
-import {React, useState, useRef, useEffect} from 'react';
+"use client";
+
+import React from 'react';
+import {useState, useRef, useEffect} from 'react';
+
+
+interface ListProps {
+    extraClass?: string
+}
+
+interface ListItem {
+    id: string,
+    content: string | null
+}
+
 
 // A component that is a list that can be edited through user input
-export default function List(props) {
+export default function List(props: ListProps) {
     // This state variable controls whether the list can be edited or not
-    const [isEdit, setIsEdit] = useState(false);
-    const [newListItem, setNewListItem] = useState(null);
-    const [list,setList] = useState([]);
-    const [id, setId] = useState(null);
-    const listRef = useRef();
+    const [isEdit, setIsEdit] = useState<boolean>(false);
+    const [newListItem, setNewListItem] = useState<string | null>(null);
+    const [list,setList] = useState<ListItem[]>([]);
+    const [id, setId] = useState<string|null>(null);
+    const listRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const uid = generateUID();
+        const uid: string = generateUID();
         setId(uid);
     },[]);
 
-    function handleSubmit(e) {
+    function handleSubmit(e: any) {
         e.preventDefault();
+        const listItemToBeAdded: ListItem = {
+            "id": generateUID(),
+            "content": newListItem
+        }
         setList(list => {
             return [
                 ...list,
-                {
-                    "id": generateUID(),
-                    "content": newListItem
-                }
+                listItemToBeAdded
             ]
         });
     }
@@ -33,7 +48,7 @@ export default function List(props) {
 
     function renderList() {
         return list.map((item) => {
-            let listItem = <p className="list-item text" id={item["id"]}>{item["content"]}</p>;
+            let listItem = <p className="list-none text" id={item["id"]}>{item["content"]}</p>;
             let deleteButton = <button 
                                     type="button" 
                                     className="btn btn-danger" 
@@ -48,7 +63,7 @@ export default function List(props) {
         })
     }
 
-    function deleteListItem(id) {
+    function deleteListItem(id: string) {
         let newList = [];
         for (let item of list) {
             if (item["id"] !== id) {
