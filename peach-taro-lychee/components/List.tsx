@@ -8,6 +8,7 @@ import "../css/List.css"
 
 
 interface ListProps {
+    isEdit: boolean
     extraClass?: string
 }
 
@@ -19,8 +20,6 @@ interface ListItem {
 
 // A component that is a list that can be edited through user input
 export default function List(props: ListProps) {
-    // This state variable controls whether the list can be edited or not
-    const [isEdit, setIsEdit] = useState<boolean>(false);
     const [newListItem, setNewListItem] = useState<string | null>(null);
     const [list,setList] = useState<ListItem[]>([]);
     const [id, setId] = useState<string|null>(null);
@@ -50,7 +49,7 @@ export default function List(props: ListProps) {
     }
 
     function renderList() {
-        if (list.length == 0 && !isEdit) {
+        if (list.length == 0 && !props.isEdit) {
             let listItem = <p className="list-none text" id={generateUID()}>{"Click Edit to get started!"}</p>;
             let group = <div className="list-item-group m-6">{listItem}</div>;
             return [group];
@@ -58,7 +57,7 @@ export default function List(props: ListProps) {
         return list.map((item) => {
             let listItem = <p className="list-none text" id={item["id"]}>{item["content"]}</p>;
             let deleteButton = <Button text="Delete" bgcolor="bg-red-500" color="text-slate-50" onClick={() => deleteListItem(item["id"])}></Button>
-            let group = <div className="list-item-group m-6">{listItem}{isEdit && deleteButton}</div>;
+            let group = <div className="list-item-group m-6">{listItem}{props.isEdit && deleteButton}</div>;
             return group;
         })
     }
@@ -72,18 +71,14 @@ export default function List(props: ListProps) {
         }
         setList(newList);
     }
-
-    function saveChanges() {
-        setIsEdit(false);
-    }
     
 
 
     return (
         <div className={props.extraClass ? `sm:container list-container ${props.extraClass}` : `sm:container list-container`} ref={listRef}>
             {renderList()}
-            {isEdit 
-            ? 
+            {props.isEdit 
+            &&
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <div className="label-container">
@@ -100,13 +95,8 @@ export default function List(props: ListProps) {
                     </input>
                 </div>
                 <Button text="Add" bgcolor="bg-green-700" color="text-slate-50" onClick={null}></Button>
-                <Button text="Save Changes" bgcolor="bg-green-700" color="text-slate-50" onClick={() => saveChanges()}></Button>
                 
             </form>
-            :
-            <div className="list-footer">
-                <Button text="Edit" bgcolor="bg-blue-700" color="text-slate-50" onClick={() => setIsEdit(true)}></Button>
-            </div>
             }
         </div>
     );
