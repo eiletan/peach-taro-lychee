@@ -52,13 +52,13 @@ export default function List(props: ListProps) {
     function renderList() {
         if (list.length == 0 && !isEdit) {
             let listItem = <p className="list-none text" id={generateUID()}>{"Click Edit to get started!"}</p>;
-            let group = <div className="list-item-group">{listItem}</div>;
+            let group = <div className="list-item-group m-6">{listItem}</div>;
             return [group];
         }
         return list.map((item) => {
             let listItem = <p className="list-none text" id={item["id"]}>{item["content"]}</p>;
             let deleteButton = <Button text="Delete" bgcolor="bg-red-500" color="text-slate-50" onClick={() => deleteListItem(item["id"])}></Button>
-            let group = <div className="list-item-group">{listItem}{isEdit && deleteButton}</div>;
+            let group = <div className="list-item-group m-6">{listItem}{isEdit && deleteButton}</div>;
             return group;
         })
     }
@@ -86,7 +86,10 @@ export default function List(props: ListProps) {
             ? 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor={`${id}-form-input`}>Add item</label>
+                    <div className="label-container">
+                        <label htmlFor={`${id}-form-input`}>Add item</label>
+                    </div>
+                    
                     <input 
                         type="text" 
                         className="form-control" 

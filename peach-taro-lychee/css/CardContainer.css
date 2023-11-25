@@ -5,19 +5,34 @@
 
 .card-container-header, .card-container-footer {
     background-color: lavender;
-    padding: 10px;   
+    padding: 10px;
+    height: 10%;   
 }
 
 
 .card-container-body {
     background-color: aliceblue;
+    height: 80%;
 }
 
 .card-content {
     margin: 20px auto;
     width: 90%;
+    height: 500px;
+}
+
+.card-content .card {
+    height: 100%;
 }
 
 .card-content .card-header {
+    background-color: aquamarine;
+}
+
+.card-content .card-container-body {
+    background-color: gainsboro;
+}
+
+.card-content .card-container-footer {
     background-color: aquamarine;
 }

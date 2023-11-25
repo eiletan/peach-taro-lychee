@@ -14,13 +14,20 @@ export default async function Home() {
 
   const list: Element | JSX.Element = <List></List>;
 
-  const cardTest: Element | JSX.Element = <CardContainer header="Furina" content={list} extraClass="card-content"></CardContainer>;
+  const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
 
-  const cardTest2: Element | JSX.Element = <CardContainer header="Focalors" content={list} extraClass="card-content"></CardContainer>;
+  const cardTest: Element | JSX.Element = <CardContainer header="Furina" content={flexx} footer="Last Updated" extraClass="card-content"></CardContainer>;
 
-  const cardTest3: Element | JSX.Element = <CardContainer header="Oratrice Mecanique D'Analyse Cardinale" content={list} extraClass="card-content"></CardContainer>;
+  const cardTest2: Element | JSX.Element = <CardContainer header="Focalors" content={flexx} footer="Last Updated" extraClass="card-content"></CardContainer>;
 
-  const flexContainer: any = <div className="grid grid-cols-1 md:grid-cols-2">{cardTest}{cardTest2}{cardTest3}</div>
+  const cardTest3: Element | JSX.Element = <CardContainer header="Oratrice Mecanique D'Analyse Cardinale" footer="Last Updated" content={flexx} extraClass="card-content"></CardContainer>;
+
+  const flexContainer: any = <div className="grid grid-cols-1 md:grid-cols-2">
+    <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest}</div>}</div>
+    <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest2}</div>}</div>
+    <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest3}</div>}</div>
+    </div>
+
 
 
   return (
