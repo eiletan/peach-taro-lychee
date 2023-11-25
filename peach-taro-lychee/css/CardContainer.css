@@ -14,8 +14,8 @@
 }
 
 .card-content {
-    margin: 0;
-    width: 45%;
+    margin: 20px auto;
+    width: 90%;
 }
 
 .card-content .card-header {
