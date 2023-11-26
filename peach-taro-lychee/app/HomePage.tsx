@@ -20,11 +20,11 @@ const [isEdit,setIsEdit] = useState<boolean>(false);
 
   const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
 
-  const cardTest: Element | JSX.Element = <CardContainer header="Furina" content={flexx} footer="Last Updated" extraClass="card-content" isEdit={isEdit}></CardContainer>;
+  const cardTest: Element | JSX.Element = <CardContainer id={123} header="Furina" content={flexx} footer="Last Updated" extraClass="card-content" isEdit={isEdit}></CardContainer>;
 
-  const cardTest2: Element | JSX.Element = <CardContainer header="Focalors" content={flexx} footer="Last Updated" extraClass="card-content" isEdit={isEdit}></CardContainer>;
+  const cardTest2: Element | JSX.Element = <CardContainer id={12} header="Focalors" content={flexx} footer="Last Updated" extraClass="card-content" isEdit={isEdit}></CardContainer>;
 
-  const cardTest3: Element | JSX.Element = <CardContainer header="Oratrice Mecanique D'Analyse Cardinale" footer="Last Updated" content={flexx} extraClass="card-content" isEdit={isEdit}></CardContainer>;
+  const cardTest3: Element | JSX.Element = <CardContainer id={1} header="Oratrice Mecanique D'Analyse Cardinale" footer="Last Updated" content={flexx} extraClass="card-content" isEdit={isEdit}></CardContainer>;
 
   const flexContainer: any = <div className="grid grid-cols-1 md:grid-cols-2">
     <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest}</div>}</div>
@@ -37,7 +37,7 @@ const [isEdit,setIsEdit] = useState<boolean>(false);
         <Button text={isEdit ? "Stop Editing" : "Edit"} bgcolor="bg-blue-700" color="text-slate-50" onClick={() => setIsEdit(prevIsEdit => !prevIsEdit)}></Button>
         <p className="text home-title">Peach Taro Lychee</p>
         {sections.map((val: {header: string, footer: string}) => {
-            return <CardContainer header={val["header"]} footer={val["footer"]} content={flexContainer} isEdit={isEdit}></CardContainer>
+            return <CardContainer id={1} header={val["header"]} footer={val["footer"]} content={flexContainer} isEdit={false}></CardContainer>
         })}
     </div>
     );

@@ -3,6 +3,7 @@
 import React from 'react';
 import {useState, useRef, useEffect} from 'react';
 import Button from './Button';
+import { generateUID } from '../util/util';
 
 import "../css/List.css"
 
@@ -48,9 +49,6 @@ export default function List(props: ListProps) {
         });
     }
 
-    function generateUID() {
-        return Math.random().toString(36).slice(-6);
-    }
 
     function renderList() {
         if (list.length == 0 && !props.isEdit) {
