@@ -7,14 +7,17 @@ import Button from './Button';
 import "../css/List.css"
 
 
-interface ListProps {
-    isEdit: boolean
-    extraClass?: string
-}
 
 interface ListItem {
     id: string,
     content: string | null
+}
+
+
+interface ListProps {
+    list: ListItem[],
+    isEdit: boolean,
+    extraClass?: string
 }
 
 
@@ -28,6 +31,7 @@ export default function List(props: ListProps) {
     useEffect(() => {
         const uid: string = generateUID();
         setId(uid);
+        setList(props.list);
     },[]);
 
     function handleSubmit(e: any) {

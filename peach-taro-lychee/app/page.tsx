@@ -14,7 +14,7 @@ export default function Home() {
   const [isEdit,setIsEdit] = useState<boolean>(false);
   const sections: any = sectionData;
 
-  const list: Element | JSX.Element = <List isEdit={isEdit}></List>;
+  const list: Element | JSX.Element = <List isEdit={isEdit} list={[]}></List>;
 
   const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
 
@@ -29,8 +29,6 @@ export default function Home() {
     <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest2}</div>}</div>
     <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest3}</div>}</div>
     </div>
-
-
 
   return (
     <div className="home-page-container">
