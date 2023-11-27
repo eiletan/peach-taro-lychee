@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import {useState} from 'react';
+import Button from './Button';
 import "../css/CardContainer.css";
 
 interface CardContainerProps {
@@ -50,9 +51,12 @@ export default function CardContainer(props: CardContainerProps) {
                 </div>
                 {props.footer ? 
                 <div className="card-footer card-container-footer rounded-bl-lg rounded-br-lg border-t-2 border-zinc-500">
+                    {props.isEdit ? 
+                    <Button text="Delete" bgcolor="bg-red-700" color="text-slate-50" onClick={() => props.deleteFunction(id)}></Button>
+                    :
                     <span className="text">
                         {props.footer}
-                    </span>
+                    </span>}
                 </div> 
                 : 
                 null}

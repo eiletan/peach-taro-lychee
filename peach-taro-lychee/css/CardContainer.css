@@ -6,7 +6,8 @@
 .card-container-header, .card-container-footer {
     background-color: lavender;
     padding: 10px;
-    height: 10%;   
+    height: 10%;
+    min-height: 55px;   
 }
 
 
