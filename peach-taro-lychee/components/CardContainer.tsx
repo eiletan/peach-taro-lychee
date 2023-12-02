@@ -35,7 +35,7 @@ export default function CardContainer(props: CardContainerProps) {
                                 type="text" 
                                 className="form-control" 
                                 id={`${id}-form-input`} 
-                                placeholder={header} 
+                                value={header} 
                                 onChange={(e) => {setHeader(e.target.value)}} 
                                 required>
                             </input>

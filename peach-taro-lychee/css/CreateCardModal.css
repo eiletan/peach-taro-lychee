@@ -1,0 +1,10 @@
+.modal-container {
+    border: 2px solid black;
+    width: 100%;
+}
+
+.modal-content {
+    width: 50%;
+    /* margin: 0 auto; */
+    border: 2px solid black;
+}

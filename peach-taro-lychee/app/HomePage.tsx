@@ -5,6 +5,7 @@ import sectionData from "../assets/sections.json"
 import CardContainer from "../components/CardContainer"
 import List from '../components/List'
 import Button from '../components/Button';
+import CreateCardModal from '../components/CreateCardModal';
 
 
 
@@ -113,6 +114,7 @@ export default function HomePage() {
         {sections.map((val: {header: string, footer: string}) => {
             return <CardContainer key={1} id={1} header={val["header"]} footer={val["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>
         })}
+        <CreateCardModal header="Add card" isActive={false}></CreateCardModal>
     </div>
     );
 }
