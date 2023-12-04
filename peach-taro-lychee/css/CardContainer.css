@@ -1,6 +1,7 @@
 .card-container {
     margin: 0 auto;
     margin-top: 70px;
+    width: 80%;
 }
 
 .card-container-header, .card-container-footer {

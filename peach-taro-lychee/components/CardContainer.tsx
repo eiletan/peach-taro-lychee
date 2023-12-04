@@ -7,11 +7,11 @@ import "../css/CardContainer.css";
 interface CardContainerProps {
     header: string,
     content: any,
-    id: number,
+    id: string,
     isEdit: boolean,
     deleteFunction?: any,
     footer?: string
-    extraClass?: string
+    extraClass?: string,
 }
 
 
@@ -20,7 +20,7 @@ interface CardContainerProps {
 // Pass in additional className as props.extraClass - this prop is optional
 export default function CardContainer(props: CardContainerProps) {
     const [header, setHeader] = useState<string>(props.header);
-    const [id, setId] = useState<number>(props.id);
+    const [id, setId] = useState<string>(props.id);
 
 
 
