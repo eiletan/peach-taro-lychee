@@ -74,6 +74,17 @@ export default function HomePage() {
   //   </div>
 
 
+  function updateHeader(id: string, newHeader: string) {
+    let updateRequest = [...requests];
+    for (let request of updateRequest) {
+      if (request["id"] == id) {
+        request["header"] = newHeader;
+        break;
+      }
+    }
+  }
+
+
   function deleteCard(id: string) {
     let newList = [];
     for (let item of requests) {
@@ -110,7 +121,7 @@ export default function HomePage() {
           const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
           return <div className="flex flex-col flex-auto">
             <div className="flex-auto">
-              <CardContainer key={val.id} id={val.id} header={val.header} content={flexx} footer={val.footer} extraClass={val.extraClass} deleteFunction={deleteCard} isEdit={isEdit}></CardContainer>
+              <CardContainer key={val.id} id={val.id} header={val.header} content={flexx} footer={val.footer} extraClass={val.extraClass} updateHeaderFunction={updateHeader} deleteFunction={deleteCard} isEdit={isEdit}></CardContainer>
             </div>
           </div>
         })}

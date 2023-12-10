@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import {useState} from 'react';
 import Button from './Button';
 import "../css/CardContainer.css";
 
@@ -9,6 +8,7 @@ interface CardContainerProps {
     content: any,
     id: string,
     isEdit: boolean,
+    updateHeaderFunction?: any,
     deleteFunction?: any,
     footer?: string
     extraClass?: string,
@@ -19,8 +19,6 @@ interface CardContainerProps {
 // Pass in footer as props.footer - this prop is optional
 // Pass in additional className as props.extraClass - this prop is optional
 export default function CardContainer(props: CardContainerProps) {
-    const [header, setHeader] = useState<string>(props.header);
-    const [id, setId] = useState<string>(props.id);
 
 
 
@@ -34,16 +32,16 @@ export default function CardContainer(props: CardContainerProps) {
                             <input 
                                 type="text" 
                                 className="form-control" 
-                                id={`${id}-form-input`} 
-                                value={header} 
-                                onChange={(e) => {setHeader(e.target.value)}} 
+                                id={`${props.id}-form-input`} 
+                                placeholder={props.header}
+                                onChange={(e) => {props.updateHeaderFunction(props.id,e.target.value)}} 
                                 required>
                             </input>
                         </div>
                     </form>
                     : 
                     <span className="text">
-                        {header ? header : "No card header provided"}
+                        {props.header ? props.header : "No card header provided"}
                     </span>}
                 </div>
                 <div className="card-body card-container-body">
@@ -52,7 +50,7 @@ export default function CardContainer(props: CardContainerProps) {
                 {props.footer ? 
                 <div className="card-footer card-container-footer rounded-bl-lg rounded-br-lg border-t-2 border-zinc-500">
                     {props.isEdit ? 
-                    <Button text="Delete" bgcolor="bg-red-700" color="text-slate-50" onClick={() => props.deleteFunction(id)}></Button>
+                    <Button text="Delete" bgcolor="bg-red-700" color="text-slate-50" onClick={() => props.deleteFunction(props.id)}></Button>
                     :
                     <span className="text">
                         {props.footer}
