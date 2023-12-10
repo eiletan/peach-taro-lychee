@@ -6,7 +6,7 @@ import CardContainer from "@/components/CardContainer"
 import List from '@/components/List'
 import Button from '@/components/Button';
 import { generateUID } from '@/util/util';
-import { Request } from '@/interfaces/Request';
+import { Request } from '@/interfaces/RequestInterfaces';
 
 
 import "../css/App.css";
