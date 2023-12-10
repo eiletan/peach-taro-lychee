@@ -1,24 +1,16 @@
 'use client';
 import React from 'react';
 import {useState, useEffect} from 'react';
-import sectionData from "../assets/sections.json"
-import CardContainer from "../components/CardContainer"
-import List from '../components/List'
-import Button from '../components/Button';
-import { generateUID } from '../util/util';
-
+import sectionData from "@/assets/sections.json"
+import CardContainer from "@/components/CardContainer"
+import List from '@/components/List'
+import Button from '@/components/Button';
+import { generateUID } from '@/util/util';
+import { Request } from '@/interfaces/Request';
 
 
 import "../css/App.css";
 import "../css/HomePage.css";
-
-interface Request {
-  id: string,
-  header: string,
-  footer: string,
-  extraClass: string,
-  content: any
-}
 
 export default function HomePage() {
 

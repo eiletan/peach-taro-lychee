@@ -3,23 +3,11 @@
 import React from 'react';
 import {useState, useRef, useEffect} from 'react';
 import Button from './Button';
-import { generateUID } from '../util/util';
+import { generateUID } from '@/util/util';
+import { ListItem, ListProps } from '@/interfaces/ListInterfaces';
 
-import "../css/List.css"
+import "@/css/List.css"
 
-
-
-interface ListItem {
-    id: string,
-    content: string | null
-}
-
-
-interface ListProps {
-    list: ListItem[],
-    isEdit: boolean,
-    extraClass?: string
-}
 
 
 // A component that is a list that can be edited through user input

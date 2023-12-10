@@ -1,13 +1,6 @@
 import React from 'react';
-import "../css/Button.css";
-
-interface ButtonProps {
-    text: string,
-    bgcolor: string,
-    color: string,
-    onClick: any,
-    extraClass?: string
-}
+import "@/css/Button.css";
+import { ButtonProps } from '@/interfaces/ButtonInterfaces';
 
 export default function Button(props: ButtonProps) {
     return (

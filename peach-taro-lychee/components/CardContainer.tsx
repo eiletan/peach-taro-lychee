@@ -1,19 +1,8 @@
 'use client';
 import React from 'react';
 import Button from './Button';
-import "../css/CardContainer.css";
-
-interface CardContainerProps {
-    header: string,
-    content: any,
-    id: string,
-    isEdit: boolean,
-    updateHeaderFunction?: any,
-    deleteFunction?: any,
-    footer?: string
-    extraClass?: string,
-}
-
+import "@/css/CardContainer.css";
+import { CardContainerProps } from '@/interfaces/CardContainerInterfaces';
 
 // Pass in content as props.content - this prop is required
 // Pass in footer as props.footer - this prop is optional
