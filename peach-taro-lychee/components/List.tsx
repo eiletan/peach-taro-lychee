@@ -12,76 +12,73 @@ import "@/css/List.css"
 
 // A component that is a list that can be edited through user input
 export default function List(props: ListProps) {
-    const [newListItem, setNewListItem] = useState<string | null>(null);
-    const [list,setList] = useState<ListItem[]>([]);
-    const [id, setId] = useState<string|null>(null);
-    const listRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const uid: string = generateUID();
-        setId(uid);
-        setList(props.list);
+        // setId(uid);
+        // setList(props.list);
     },[]);
 
-    function handleSubmit(e: any) {
-        e.preventDefault();
-        const listItemToBeAdded: ListItem = {
-            "id": generateUID(),
-            "content": newListItem
-        }
-        setList(list => {
-            return [
-                ...list,
-                listItemToBeAdded
-            ]
-        });
-    }
+    // function handleSubmit(e: any) {
+    //     e.preventDefault();
+    //     const listItemToBeAdded: ListItem = {
+    //         "id": generateUID(),
+    //         "ownerId": id,
+    //         "content": newListItem
+    //     }
+    //     setList(list => {
+    //         return [
+    //             ...list,
+    //             listItemToBeAdded
+    //         ]
+    //     });
+    // }
 
 
     function renderList() {
-        if (list.length == 0 && !props.isEdit) {
+        if (props.list.length == 0 && !props.isEdit) {
             let lid = generateUID();
             let listItem = <p className="list-none text" id={lid} key={lid}>{"Click Edit to get started!"}</p>;
             let group = <div className="list-item-group m-6">{listItem}</div>;
             return [group];
         }
-        return list.map((item) => {
+        return props.list.map((item) => {
             let listItem = <p className="list-none text" id={item["id"]} key={item["id"]}>{item["content"]}</p>;
-            let deleteButton = <Button text="Delete" bgcolor="bg-red-500" color="text-slate-50" onClick={() => deleteListItem(item["id"])}></Button>
+            let deleteButton = <Button text="Delete" bgcolor="bg-red-500" color="text-slate-50" onClick={() => props.delete(item["id"], props.id)}></Button>
             let group = <div className="list-item-group m-6">{listItem}{props.isEdit && deleteButton}</div>;
             return group;
         })
     }
 
-    function deleteListItem(id: string) {
-        let newList = [];
-        for (let item of list) {
-            if (item["id"] !== id) {
-                newList.push(item);
-            }
-        }
-        setList(newList);
-    }
+    // function deleteListItem(id: string) {
+    //     let newList = [];
+    //     for (let item of list) {
+    //         if (item["id"] !== id) {
+    //             newList.push(item);
+    //         }
+    //     }
+    //     setList(newList);
+    // }
     
 
 
     return (
-        <div className={props.extraClass ? `sm:container list-container ${props.extraClass}` : `sm:container list-container`} ref={listRef}>
+        <div className={props.extraClass ? `sm:container list-container ${props.extraClass}` : `sm:container list-container`}>
             {renderList()}
             {props.isEdit 
             &&
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => props.handleSubmit(e, props.id)}>
                 <div className="form-group">
                     <div className="label-container">
-                        <label htmlFor={`${id}-form-input`}>Add item</label>
+                        <label htmlFor={`${props.id}-form-input`}>Add item</label>
                     </div>
                     
                     <input 
                         type="text" 
                         className="form-control" 
-                        id={`${id}-form-input`} 
+                        id={`${props.id}-form-input`} 
                         placeholder="New item" 
-                        onChange={(e) => {setNewListItem(e.target.value)}} 
+                        onChange={(e) => {props.onChange(props.id,e.target.value)}} 
                         required>
                     </input>
                 </div>
