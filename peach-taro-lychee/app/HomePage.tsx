@@ -20,9 +20,12 @@ export default function HomePage() {
   const [lists, setLists] = useState<ListObj[]>([]);
   const sections: any = sectionData;
 
-  const list1: Element | JSX.Element = <List id={"1235141abc"} isEdit={isEdit} list={[]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
-
-  const flexx: any = <div className="grid grid-cols-1 grid-container">{list1}</div>
+  const list1: Element | JSX.Element = <List ownerId={"1234567"} id={"1235141abc"} isEdit={isEdit} list={lists?.[0]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
+  const list2: Element | JSX.Element = <List ownerId={"123"} id={"1337a"} isEdit={isEdit} list={lists?.[1]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
+  const list3: Element | JSX.Element = <List ownerId={"1234"} id={"1337ab"} isEdit={isEdit} list={lists?.[2]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
+  const flexx: any = <div className="grid grid-cols-1 grid-container">{list1}</div>;
+  const flexx2: any = <div className="grid grid-cols-1 grid-container">{list2}</div>;
+  const flexx3: any = <div className="grid grid-cols-1 grid-container">{list3}</div>;
 
 
   let testArr: Request[] = [
@@ -31,13 +34,46 @@ export default function HomePage() {
       header: "Furina",
       footer: "Last Updated",
       extraClass: "card-content",
-      content: flexx
+      content: flexx2
+    },
+    {
+      id: "1234",
+      header: "Focalors",
+      footer: "Last Updated",
+      extraClass: "card-content",
+      content: flexx3
     }
   ];
 
+  let testListsArr: ListObj[] = [
+    {
+      ownerId: "1234567",
+      id: "1235141abc", 
+      listItems: [], 
+      currentNewItem: ""
+    },
+    {
+      ownerId: "123",
+      id: "1337a", 
+      listItems: [], 
+      currentNewItem: ""
+    },
+    {
+      ownerId: "1234",
+      id: "1337ab", 
+      listItems: [
+        {
+          id: "abcdfeqrqoiu",
+          ownerId: "1337ab",
+          content: "The Hydro Archon"
+      }], 
+      currentNewItem: ""
+    }    
+  ];
+
   useEffect(() => {
-    // setRequests(testArr);
-    setLists([{id: "1235141abc", "listItems": [], "currentNewItem": ""}]);
+    setRequests(testArr);
+    setLists(testListsArr);
   },[]);
 
 
@@ -59,6 +95,7 @@ export default function HomePage() {
     let newLists = [...lists];
     for (let l of newLists) {
       if (l["id"] == ownerId) {
+        console.log(l);
         let listItems: ListItem[] = l["listItems"];
         const listItemToBeAdded: ListItem = {
           "id": generateUID(),
@@ -83,6 +120,7 @@ export default function HomePage() {
         break;
       }
     }
+    console.log(content);
     setLists(newList);
   }
 
@@ -91,14 +129,18 @@ export default function HomePage() {
     let newList = [...lists];
     for (let list of newList) {
         if (list["id"] == ownerId) {
+          console.log(list);
           let listItems: ListItem[] = list["listItems"];
+          let newListList = [];
           for (let item of listItems) {
             if (item["id"] !== id) {
-              listItems.push(item);
+              newListList.push(item);
             }
           }
+          list["listItems"] = newListList;
         }
     }
+    console.log(newList);
     setLists(newList);
   }
 

@@ -36,13 +36,13 @@ export default function List(props: ListProps) {
 
 
     function renderList() {
-        if (props.list.length == 0 && !props.isEdit) {
+        if ((props?.list?.length == 0 || props?.list?.length === undefined) && !props.isEdit) {
             let lid = generateUID();
             let listItem = <p className="list-none text" id={lid} key={lid}>{"Click Edit to get started!"}</p>;
             let group = <div className="list-item-group m-6">{listItem}</div>;
             return [group];
         }
-        return props.list.map((item) => {
+        return props?.list?.map((item) => {
             let listItem = <p className="list-none text" id={item["id"]} key={item["id"]}>{item["content"]}</p>;
             let deleteButton = <Button text="Delete" bgcolor="bg-red-500" color="text-slate-50" onClick={() => props.delete(item["id"], props.id)}></Button>
             let group = <div className="list-item-group m-6">{listItem}{props.isEdit && deleteButton}</div>;

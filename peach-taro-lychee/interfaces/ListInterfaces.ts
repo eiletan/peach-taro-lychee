@@ -5,6 +5,7 @@ export interface ListItem {
 }
 
 export interface ListObj {
+    ownerId: string | null;
     id: string,
     listItems: ListItem[],
     currentNewItem: string
@@ -12,8 +13,9 @@ export interface ListObj {
 
 
 export interface ListProps {
+    ownerId: string | null,
     id: string,
-    list: ListItem[],
+    list: ListItem[] | null,
     isEdit: boolean,
     handleSubmit: any,
     onChange: any,
