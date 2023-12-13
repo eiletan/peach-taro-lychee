@@ -122,7 +122,6 @@ export default function HomePage() {
           list["listItems"] = newListList;
         }
     }
-    console.log(newList);
     setLists(newList);
   }
 
@@ -140,24 +139,46 @@ export default function HomePage() {
 
   function deleteCard(id: string) {
     let newList = [];
+    let card;
+    
     for (let item of requests) {
       if (item["id"] !== id) {
         newList.push(item);
+      } else {
+        card = item;
       }
     }
+    let newListList = [];
+    console.log(lists);
+    for (let list of lists) {
+      if (list["ownerId"] !== card["id"]) {
+        newListList.push(list);
+      }
+    }
+    console.log(newListList);
+    setLists(newListList);
     setRequests(newList);
   }
 
   function addCard() {
+    let id = generateUID();
+    let listId = generateUID();
     let newCard: Request = {
-      id: generateUID(),
+      id: id,
       header: "New Card",
       footer: "Last Updated",
       extraClass: "card-content",
-      content: flexx
+      content: null
     }
     let newList: Request[] = [...requests,newCard];
+    let newCardList: ListObj = {
+      ownerId: id,
+      id: listId,
+      listItems: [],
+      currentNewItem: ""
+    }
     setRequests(newList);
+    setLists([...lists,newCardList]);
   }
 
   function generateContentCardsHelper() {
