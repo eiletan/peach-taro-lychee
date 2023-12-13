@@ -23,53 +23,17 @@ export default function HomePage() {
   const list1: Element | JSX.Element = <List ownerId={"1234567"} id={"1235141abc"} isEdit={isEdit} list={lists?.[0]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
   const flexx: any = <div className="grid grid-cols-1 grid-container">{list1}</div>;
 
-
-  let testArr: Request[] = [
+  let testList: ListObj[] = [
     {
-      id: "123",
-      header: "Furina",
-      footer: "Last Updated",
-      extraClass: "card-content",
-      content: null
-    },
-    {
-      id: "1234",
-      header: "Focalors",
-      footer: "Last Updated",
-      extraClass: "card-content",
-      content: null
+      ownerId: "1234567",
+      id: "1235141abc",
+      listItems: [],
+      currentNewItem: ""
     }
   ];
 
-  let testListsArr: ListObj[] = [
-    {
-      ownerId: "1234567",
-      id: "1235141abc", 
-      listItems: [], 
-      currentNewItem: ""
-    },
-    {
-      ownerId: "123",
-      id: "1337a", 
-      listItems: [], 
-      currentNewItem: ""
-    },
-    {
-      ownerId: "1234",
-      id: "1337ab", 
-      listItems: [
-        {
-          id: "abcdfeqrqoiu",
-          ownerId: "1337ab",
-          content: "The Hydro Archon"
-      }], 
-      currentNewItem: ""
-    }    
-  ];
-
   useEffect(() => {
-    setRequests(testArr);
-    setLists(testListsArr);
+    setLists(testList);
   },[]);
 
 
@@ -200,7 +164,7 @@ export default function HomePage() {
   }
 
   function generateContentCards() {
-    if (requests.length == 0) {
+    if (requests.length == 0 && !isEdit) {
       return <div className="container">
         <p className="text">Click on the edit button to get started!</p>
       </div>
