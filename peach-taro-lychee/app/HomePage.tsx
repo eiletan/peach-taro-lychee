@@ -21,11 +21,7 @@ export default function HomePage() {
   const sections: any = sectionData;
 
   const list1: Element | JSX.Element = <List ownerId={"1234567"} id={"1235141abc"} isEdit={isEdit} list={lists?.[0]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
-  const list2: Element | JSX.Element = <List ownerId={"123"} id={"1337a"} isEdit={isEdit} list={lists?.[1]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
-  const list3: Element | JSX.Element = <List ownerId={"1234"} id={"1337ab"} isEdit={isEdit} list={lists?.[2]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
   const flexx: any = <div className="grid grid-cols-1 grid-container">{list1}</div>;
-  const flexx2: any = <div className="grid grid-cols-1 grid-container">{list2}</div>;
-  const flexx3: any = <div className="grid grid-cols-1 grid-container">{list3}</div>;
 
 
   let testArr: Request[] = [
@@ -34,14 +30,14 @@ export default function HomePage() {
       header: "Furina",
       footer: "Last Updated",
       extraClass: "card-content",
-      content: flexx2
+      content: null
     },
     {
       id: "1234",
       header: "Focalors",
       footer: "Last Updated",
       extraClass: "card-content",
-      content: flexx3
+      content: null
     }
   ];
 
@@ -77,25 +73,11 @@ export default function HomePage() {
   },[]);
 
 
-
-  // const cardTest: Element | JSX.Element = <CardContainer id={123} header="Furina" content={flexx} footer="Last Updated" extraClass="card-content" isEdit={isEdit}></CardContainer>;
-
-  // const cardTest2: Element | JSX.Element = <CardContainer id={12} header="Focalors" content={flexx} footer="Last Updated" extraClass="card-content" isEdit={isEdit}></CardContainer>;
-
-  // const cardTest3: Element | JSX.Element = <CardContainer id={1} header="Oratrice Mecanique D'Analyse Cardinale" footer="Last Updated" content={flexx} extraClass="card-content" isEdit={isEdit}></CardContainer>;
-
-  // const flexContainer: any = <div className="grid grid-cols-1 md:grid-cols-2">
-  //   <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest}</div>}</div>
-  //   <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest2}</div>}</div>
-  //   <div className="flex flex-col flex-auto">{<div className="flex-auto">{cardTest3}</div>}</div>
-  //   </div>
-
   function addListItem(e: any, ownerId: string) {
     e.preventDefault();
     let newLists = [...lists];
     for (let l of newLists) {
       if (l["id"] == ownerId) {
-        console.log(l);
         let listItems: ListItem[] = l["listItems"];
         const listItemToBeAdded: ListItem = {
           "id": generateUID(),
@@ -107,7 +89,6 @@ export default function HomePage() {
         break;
       }
     }
-    console.log(newLists);
     setLists(newLists);
   }
 
@@ -178,6 +159,24 @@ export default function HomePage() {
     setRequests(newList);
   }
 
+  function generateContentCardsHelper() {
+    return requests.map((val: Request) => {
+      let listObj: ListObj;
+      for (let list of lists) {
+        if (list["ownerId"] == val["id"]) {
+          listObj = list;
+        }
+      }
+      const list: Element | JSX.Element = <List ownerId={val["id"]} id={listObj["id"]} isEdit={isEdit} list={listObj["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
+      const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
+      return <div className="flex flex-col flex-auto">
+            <div className="flex-auto">
+              <CardContainer key={val.id} id={val.id} header={val.header} content={flexx} footer={val.footer} extraClass={val.extraClass} updateHeaderFunction={updateHeader} deleteFunction={deleteCard} isEdit={isEdit}></CardContainer>
+            </div>
+          </div>
+    });
+  }
+
   function generateContentCards() {
     if (requests.length == 0) {
       return <div className="container">
@@ -187,15 +186,7 @@ export default function HomePage() {
       let addCardButton: Element | JSX.Element = <Button text="Add Card" bgcolor="bg-green-700" color="text-slate-50" onClick={addCard}></Button>;
       let flexContainerDiv: Element | JSX.Element = <div className="flex flex-col items-center justify-center">{addCardButton}</div>
       return <div className="grid grid-cols-1 md:grid-cols-2">
-        {requests.map((val: Request) => {
-          const list: Element | JSX.Element = <List id={generateUID()} isEdit={isEdit} list={[]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
-          const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
-          return <div className="flex flex-col flex-auto">
-            <div className="flex-auto">
-              <CardContainer key={val.id} id={val.id} header={val.header} content={flexx} footer={val.footer} extraClass={val.extraClass} updateHeaderFunction={updateHeader} deleteFunction={deleteCard} isEdit={isEdit}></CardContainer>
-            </div>
-          </div>
-        })}
+        {generateContentCardsHelper()}
         {isEdit &&
         flexContainerDiv
         }
@@ -211,9 +202,6 @@ export default function HomePage() {
         <p className="text home-title">Peach Taro Lychee</p>
         <CardContainer key={"123456"} id={"123456"} header={sections[0]["header"]} footer={sections[0]["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>
         <CardContainer key={"1234567"} id={"1234567"} header={sections[1]["header"]} footer={sections[1]["footer"]} content={flexx} isEdit={false}></CardContainer>
-        {/* {sections.map((val: {header: string, footer: string}) => {
-            return <CardContainer key={1} id={"1"} header={val["header"]} footer={val["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>
-        })} */}
     </div>
     );
 }

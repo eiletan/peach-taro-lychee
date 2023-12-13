@@ -13,27 +13,6 @@ import "@/css/List.css"
 // A component that is a list that can be edited through user input
 export default function List(props: ListProps) {
 
-    useEffect(() => {
-        const uid: string = generateUID();
-        // setId(uid);
-        // setList(props.list);
-    },[]);
-
-    // function handleSubmit(e: any) {
-    //     e.preventDefault();
-    //     const listItemToBeAdded: ListItem = {
-    //         "id": generateUID(),
-    //         "ownerId": id,
-    //         "content": newListItem
-    //     }
-    //     setList(list => {
-    //         return [
-    //             ...list,
-    //             listItemToBeAdded
-    //         ]
-    //     });
-    // }
-
 
     function renderList() {
         if ((props?.list?.length == 0 || props?.list?.length === undefined) && !props.isEdit) {
@@ -50,16 +29,6 @@ export default function List(props: ListProps) {
         })
     }
 
-    // function deleteListItem(id: string) {
-    //     let newList = [];
-    //     for (let item of list) {
-    //         if (item["id"] !== id) {
-    //             newList.push(item);
-    //         }
-    //     }
-    //     setList(newList);
-    // }
-    
 
 
     return (
