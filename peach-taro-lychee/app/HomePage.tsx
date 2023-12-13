@@ -75,6 +75,7 @@ export default function HomePage() {
 
   function addListItem(e: any, ownerId: string) {
     e.preventDefault();
+    e.target.reset();
     let newLists = [...lists];
     for (let l of newLists) {
       if (l["id"] == ownerId) {
