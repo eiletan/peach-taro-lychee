@@ -1,0 +1,15 @@
+.form-group {
+    padding: 10px;
+}
+
+.list-item-group {
+    padding-top: 10px;
+}
+
+.list-container {
+    overflow-y: auto;
+}
+
+.list-footer {
+    padding: 10px;
+}
