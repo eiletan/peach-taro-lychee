@@ -23,16 +23,15 @@ export default function HomePage() {
   const list1: Element | JSX.Element = <List ownerId={"1234567"} id={"1235141abc"} isEdit={isEdit} list={lists?.[0]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
   const flexx: any = <div className="grid grid-cols-1 grid-container">{list1}</div>;
 
-  let testList: ListObj[] = [
-    {
-      ownerId: "1234567",
-      id: "1235141abc",
-      listItems: [],
-      currentNewItem: ""
-    }
-  ];
-
   useEffect(() => {
+    let testList: ListObj[] = [
+      {
+        ownerId: "1234567",
+        id: "1235141abc",
+        listItems: [],
+        currentNewItem: ""
+      }
+    ];
     setLists(testList);
   },[]);
 
@@ -115,7 +114,7 @@ export default function HomePage() {
     let newListList = [];
     console.log(lists);
     for (let list of lists) {
-      if (list["ownerId"] !== card["id"]) {
+      if (list["ownerId"] !== card?.["id"]) {
         newListList.push(list);
       }
     }
@@ -147,7 +146,12 @@ export default function HomePage() {
 
   function generateContentCardsHelper() {
     return requests.map((val: Request) => {
-      let listObj: ListObj;
+      let listObj: ListObj = {
+        ownerId: "",
+        id: "",
+        listItems: [],
+        currentNewItem: ""
+      };
       for (let list of lists) {
         if (list["ownerId"] == val["id"]) {
           listObj = list;
@@ -155,7 +159,7 @@ export default function HomePage() {
       }
       const list: Element | JSX.Element = <List ownerId={val["id"]} id={listObj["id"]} isEdit={isEdit} list={listObj["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
       const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
-      return <div className="flex flex-col flex-auto">
+      return <div className="flex flex-col flex-auto" key={val.id}>
             <div className="flex-auto">
               <CardContainer key={val.id} id={val.id} header={val.header} content={flexx} footer={val.footer} extraClass={val.extraClass} updateHeaderFunction={updateHeader} deleteFunction={deleteCard} isEdit={isEdit}></CardContainer>
             </div>
