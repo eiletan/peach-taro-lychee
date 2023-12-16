@@ -1,0 +1,32 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Card {
+  id          String    @id @default(cuid())
+  header      String
+  footer      String
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  updatedAt   DateTime  @updatedAt @map(name: "updated_at")
+  list        List[]
+}
+
+
+model List {
+  id        String  @id @default(cuid())
+  listOwner Card    @relation(fields: [ownerId], references: [id])
+  ownerId   String
+  listItems ListItem[]
+}
+
+model ListItem {
+  id              String    @id @default(cuid())
+  listItemOwner   List      @relation(fields: [ownerId], references: [id])
+  ownerId         String    
+  content         String
+}
