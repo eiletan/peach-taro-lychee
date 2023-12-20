@@ -19,14 +19,14 @@ model Card {
 
 model List {
   id        String  @id @default(cuid())
-  listOwner Card    @relation(fields: [ownerId], references: [id])
-  ownerId   String
+  listOwner Card?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String?
   listItems ListItem[]
 }
 
 model ListItem {
   id              String    @id @default(cuid())
-  listItemOwner   List      @relation(fields: [ownerId], references: [id])
-  ownerId         String    
+  listItemOwner   List?      @relation(fields: [ownerId], references: [id])
+  ownerId         String?    
   content         String
 }
