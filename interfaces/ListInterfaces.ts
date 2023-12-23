@@ -17,8 +17,8 @@ export interface ListProps {
     id: string,
     list: ListItem[] | null,
     isEdit: boolean,
-    handleSubmit: any,
-    onChange: any,
-    delete: any,
+    handleSubmit: Function,
+    onChange: Function,
+    delete: Function,
     extraClass?: string
 }

@@ -65,7 +65,6 @@ export default function HomePage() {
         break;
       }
     }
-    console.log(content);
     setLists(newList);
   }
 
@@ -185,10 +184,18 @@ export default function HomePage() {
   }
 
   
+  async function stopEditingAndSaveChanges() {
+    setIsEdit(prevIsEdit => !prevIsEdit);
+    const res = await fetch('/api/get-cards');
+    const cardjson = await res.json();
+    console.log(cardjson);
+  }
+
+  
 
   return (
     <div className="home-page-container">
-        <Button text={isEdit ? "Stop Editing And Save Changes" : "Edit"} bgcolor="bg-blue-700" color="text-slate-50" onClick={() => setIsEdit(prevIsEdit => !prevIsEdit)}></Button>
+        <Button text={isEdit ? "Stop Editing And Save Changes" : "Edit"} bgcolor="bg-blue-700" color="text-slate-50" onClick={() => stopEditingAndSaveChanges()}></Button>
         <p className="text home-title">Peach Taro Lychee</p>
         <CardContainer key={"123456"} id={"123456"} header={sections[0]["header"]} footer={sections[0]["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>
         <CardContainer key={"1234567"} id={"1234567"} header={sections[1]["header"]} footer={sections[1]["footer"]} content={flexx} isEdit={false}></CardContainer>
