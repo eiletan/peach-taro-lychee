@@ -24,16 +24,50 @@ export default function HomePage() {
   const flexx: any = <div className="grid grid-cols-1 grid-container">{list1}</div>;
 
   useEffect(() => {
-    let testList: ListObj[] = [
-      {
-        ownerId: "1234567",
-        id: "1235141abc",
-        listItems: [],
-        currentNewItem: ""
-      }
-    ];
-    setLists(testList);
+    fetchData();
   },[]);
+
+  async function fetchData() {
+    const cards = await fetchCards();
+    const lists = await fetchLists();
+    let newCardList: Request[] = [];
+    let newList: ListObj[] = [];
+    // Process cards data fetched from the database
+    cards["cards"].forEach((card: any) => {
+      let cardObj: Request = {
+        id: card["id"],
+        header: card["header"],
+        footer: card["footer"],
+        extraClass: "card-content",
+        content: null,
+      };
+      newCardList.push(cardObj);
+    });
+    // Process lists data fetched from the database
+    lists["lists"].forEach((list: any) => {
+      let listObj: ListObj = {
+        ownerId: list["ownerId"],
+        id: list["id"],
+        listItems: list["listItems"],
+        currentNewItem: ""
+      };
+      newList.push(listObj);
+    });
+    setRequests(newCardList);
+    setLists(newList);
+  }
+
+  async function fetchCards() {
+    const res = await fetch('/api/get-cards');
+    const cardjson = await res.json();
+    return cardjson;
+  }
+
+  async function fetchLists() {
+    const res = await fetch('/api/get-lists');
+    const listsjson = await res.json();
+    return listsjson;
+  }
 
 
   function addListItem(e: any, ownerId: string) {
