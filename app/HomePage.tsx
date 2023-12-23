@@ -186,9 +186,6 @@ export default function HomePage() {
   
   async function stopEditingAndSaveChanges() {
     setIsEdit(prevIsEdit => !prevIsEdit);
-    const res = await fetch('/api/get-cards');
-    const cardjson = await res.json();
-    console.log(cardjson);
   }
 
   

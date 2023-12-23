@@ -14,7 +14,8 @@ async function getCards() {
       select: {
         id: true,
         header: true,
-        updatedAt: true
+        updatedAt: true,
+        list: true,
       }
     });
     return cards;
