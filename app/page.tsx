@@ -12,13 +12,11 @@ async function getCards() {
       updatedAt: true
     }
   });
-  console.log(cards);
   return cards;
 }
 
 export default async function Home() {
   const cards = await getCards();
-  console.log({cards});
   return (
     <HomePage></HomePage>
 );

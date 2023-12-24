@@ -23,8 +23,8 @@ export default function List(props: ListProps) {
         }
         return props?.list?.map((item) => {
             let listItem = <p className="list-none text" id={item["id"]} key={item["id"]}>{item["content"]}</p>;
-            let deleteButton = <Button key={item["id"]} text="Delete" bgcolor="bg-red-500" color="text-slate-50" onClick={() => props.delete(item["id"], props.id)}></Button>
-            let group = <div key={item["id"]} className="list-item-group m-6">{listItem}{props.isEdit && deleteButton}</div>;
+            let deleteButton = <Button key={`d-${item["id"]}`} text="Delete" bgcolor="bg-red-500" color="text-slate-50" onClick={() => props.delete(item["id"], props.id)}></Button>
+            let group = <div key={`g-${item["id"]}`} className="list-item-group m-6">{listItem}{props.isEdit && deleteButton}</div>;
             return group;
         })
     }
