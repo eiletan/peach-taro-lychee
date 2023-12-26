@@ -18,15 +18,19 @@ model Card {
 
 
 model List {
-  id        String  @id @default(cuid())
-  listOwner Card?    @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id        String       @id @default(cuid())
+  listOwner Card?        @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId   String?
+  createdAt   DateTime   @default(now()) @map(name: "created_at")
+  updatedAt   DateTime   @updatedAt @map(name: "updated_at")
   listItems ListItem[]
 }
 
 model ListItem {
   id              String    @id
-  listItemOwner   List?      @relation(fields: [ownerId], references: [id])
-  ownerId         String?    
+  listItemOwner   List?     @relation(fields: [ownerId], references: [id])
+  ownerId         String?
+  createdAt       DateTime  @default(now()) @map(name: "created_at")
+  updatedAt       DateTime  @updatedAt @map(name: "updated_at")
   content         String
 }

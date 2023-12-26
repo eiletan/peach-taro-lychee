@@ -14,6 +14,7 @@ async function getCards() {
       select: {
         id: true,
         header: true,
+        footer: true,
         updatedAt: true,
         list: true,
       }
