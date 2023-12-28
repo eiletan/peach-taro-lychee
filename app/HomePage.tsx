@@ -196,6 +196,7 @@ export default function HomePage() {
         newList.push(item);
       } else {
         card = item;
+        changeLog["deleteLog"]["card"].push(card["id"]);
       }
     }
     let newListList = [];
@@ -203,9 +204,17 @@ export default function HomePage() {
     for (let list of lists) {
       if (list["ownerId"] !== card?.["id"]) {
         newListList.push(list);
+      } else {
+        let listLogItem: ListChangeLogItem = {
+          id: list["id"],
+          ownerId: list["ownerId"],
+          contents: []
+        }
+        changeLog["deleteLog"]["list"].push(listLogItem);
       }
     }
-    console.log(newListList);
+    console.log(changeLog);
+    setChangeLog(changeLog);
     setLists(newListList);
     setRequests(newList);
   }
@@ -289,6 +298,16 @@ export default function HomePage() {
 
   
   async function stopEditingAndSaveChanges() {
+    if (isEdit) {
+      let requestObj = {
+        method: "POST",
+        header: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(changeLog)
+      };
+      fetch('/api/update', requestObj);
+    }
     setIsEdit(prevIsEdit => !prevIsEdit);
   }
 

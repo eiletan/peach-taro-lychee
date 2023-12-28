@@ -11,6 +11,11 @@ export interface ListObj {
     currentNewItem: string
 }
 
+export interface ListQueryItem {
+    ownerId: string | null | undefined;
+    id: string;
+}
+
 
 export interface ListProps {
     ownerId: string | null,
