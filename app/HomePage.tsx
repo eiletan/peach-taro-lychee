@@ -19,7 +19,7 @@ export default function HomePage() {
   const emptyChangeLog: ChangeLog = {
     deleteLog: {
       card: [],
-      list: [],
+      listItems: [],
     },
     updateLog: {
       card: [],
@@ -148,6 +148,8 @@ export default function HomePage() {
           for (let item of listItems) {
             if (item["id"] !== id) {
               newListList.push(item);
+            } else {
+              changeLog["deleteLog"]["listItems"].push(item["id"]);
             }
           }
           list["listItems"] = newListList;
@@ -204,13 +206,6 @@ export default function HomePage() {
     for (let list of lists) {
       if (list["ownerId"] !== card?.["id"]) {
         newListList.push(list);
-      } else {
-        let listLogItem: ListChangeLogItem = {
-          id: list["id"],
-          ownerId: list["ownerId"],
-          contents: []
-        }
-        changeLog["deleteLog"]["list"].push(listLogItem);
       }
     }
     console.log(changeLog);

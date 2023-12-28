@@ -9,7 +9,7 @@ export interface ChangeLog {
 
 export interface DeleteLog {
     card: string[],
-    list: ListChangeLogItem[]
+    listItems: string[]
 }
 
 
