@@ -31,7 +31,6 @@ function processChangeLog(log: ChangeLog) {
     let addListItemList: ListChangeLogItem[] = log["updateLog"]["list"];
     let addListList: ListChangeLogItem[] = log["addLog"]["list"];
 
-    let leakedListItemIds: string[] = [];
 
     for (let h = delCardIds.length-1; h >= 0; h--) {
         // Check add cards log, lists associated with the cards also need to be deleted
@@ -66,16 +65,25 @@ function processChangeLog(log: ChangeLog) {
             delCardIds.splice(h,1);
         }
     }
-
-    // console.log("enter");
-    // console.log(delListItemIds);
-    // console.log(leakedListItemIds);
-    // delListItemIds = delListItemIds.filter((listItemId: string) => {
-    //     leakedListItemIds.indexOf(listItemId) == -1
-    // });
-    // console.log(delListItemIds);
-    // console.log("exit");
-    
+    for (let n = delListItemIds.length-1; n >= 0; n--) {
+        let isRemoved: boolean = false;
+        for (let o = addListItemList.length-1; o >= 0; o--) {
+            let listItems: ListItem[] = addListItemList[o]["contents"];
+            for (let p = listItems.length-1; p >= 0; p--) {
+                if (listItems[p]["id"] == delListItemIds[n]) {
+                    isRemoved = true;
+                    listItems.splice(p,1);
+                    break;
+                }
+            }
+            if (isRemoved) {
+                break;
+            }
+        }
+        if (isRemoved) {
+            delListItemIds.splice(n,1);
+        }
+    }
     // delListItemIds.forEach((listItemId: string) => {
     //     let isRemoved: boolean = false;
     //     newAddListItemList.forEach((list: ListChangeLogItem) => {
