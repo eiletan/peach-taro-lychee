@@ -112,6 +112,7 @@ export default function HomePage() {
         }
         if (!addedToLog) {
           let item: ListChangeLogItem = {
+            ownerId: l["ownerId"],
             id: ownerId,
             contents: [listItemToBeAdded]
           }

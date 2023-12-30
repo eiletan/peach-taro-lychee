@@ -24,7 +24,7 @@ export interface AddLog {
 }
 
 export interface ListChangeLogItem {
-    ownerId?: string,
+    ownerId?: string | null,
     id: string,
     contents: ListItem[]
 }
