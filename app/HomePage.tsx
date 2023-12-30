@@ -295,6 +295,7 @@ export default function HomePage() {
   
   async function stopEditingAndSaveChanges() {
     if (isEdit) {
+      console.log(changeLog);
       let requestObj = {
         method: "POST",
         header: {

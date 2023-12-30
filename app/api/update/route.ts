@@ -31,61 +31,102 @@ function processChangeLog(log: ChangeLog) {
     let addListItemList: ListChangeLogItem[] = log["updateLog"]["list"];
     let addListList: ListChangeLogItem[] = log["addLog"]["list"];
 
-    let newAddCard: CardChangeLog[] = [];
+    let newDelCards: string[] = [];
+    let newDelListItemIds: string[] = [];
+    let newAddCards: CardChangeLog[] = [];
+    let newAddListList: ListChangeLogItem[] = [];
+    let newUpdateCards: CardChangeLog[] = [];
+    let newAddListItemList: ListChangeLogItem[] = [];
 
-    addCardList.forEach((card: CardChangeLog) => {
-        let indexOfId = delCardIds.indexOf(card["id"]);
-        if (indexOfId != -1) {
-            addListList = addListList.filter((list: ListChangeLogItem) => {
-                list["ownerId"] != card["id"];
-            });
-            console.log("printing before updated cards");
-            console.log(updateCards);
-            updateCards = updateCards.filter((uCard: CardChangeLog) => {
-                uCard["id"] != card["id"];
-            });
-            console.log("printing updated cards");
-            console.log(updateCards);
-            addListItemList = addListItemList.filter((list: ListChangeLogItem) => {
-                list["ownerId"] != card["id"];
-            })
-            delCardIds.splice(indexOfId,1);
-        } else {
-            newAddCard.push(card);
+    if (delCardIds.length == 0) {
+        newAddCards = addCardList;
+        newAddListList = addListList;
+        newUpdateCards = updateCards;
+        newAddListItemList = addListItemList; 
+    }
+
+
+    let leakedListItemIds: string[] = [];
+
+    delCardIds.forEach((cardId: string) => {
+        // Check add cards log, lists associated with the cards also need to be deleted
+        // Check update cards log, lists associated with the cards also need to be deleted
+        let isOverlap: boolean = false;
+        addCardList.forEach((card: CardChangeLog) => {
+            if (cardId == card["id"]) {
+                isOverlap = true;
+            } else {
+                newAddCards.push(card);
+            }
+        });
+        addListList.forEach((list: ListChangeLogItem) => {
+            if (cardId == list["ownerId"]) {
+                isOverlap = true;
+            } else {
+                newAddListList.push(list);
+            }
+        });
+        updateCards.forEach((card: CardChangeLog) => {
+            if (cardId == card["id"]) {
+                isOverlap = true;
+            } else {
+                newUpdateCards.push(card);
+            }
+        });
+        addListItemList.forEach((list: ListChangeLogItem) => {
+            if (cardId == list["ownerId"]) {
+                isOverlap = true;
+                let idArr: string[] = [];
+                for (let i = 0; i < list["contents"].length; i++) {
+                    idArr.push(list["contents"][i]["id"]);
+                }
+                leakedListItemIds = [...leakedListItemIds,...idArr];
+            } else {
+                newAddListItemList.push(list);
+            }
+        });
+        if (!isOverlap) {
+            newDelCards.push(cardId);
         }
     });
 
-    addListItemList.forEach((list: ListChangeLogItem) => {
-        let listItems: ListItem[] = list["contents"];
-        let newAddListItem: ListItem[] = [];
-        listItems.forEach((listItem: ListItem) =>{
-            let indexOfId = delListItemIds.indexOf(listItem["id"]);
-            if (indexOfId != -1) {
-                delListItemIds.splice(indexOfId,1);
-            } else {
-                newAddListItem.push(listItem);
+    // console.log("enter");
+    // console.log(delListItemIds);
+    // console.log(leakedListItemIds);
+    // delListItemIds = delListItemIds.filter((listItemId: string) => {
+    //     leakedListItemIds.indexOf(listItemId) == -1
+    // });
+    // console.log(delListItemIds);
+    // console.log("exit");
+    
+    delListItemIds.forEach((listItemId: string) => {
+        let isRemoved: boolean = false;
+        newAddListItemList.forEach((list: ListChangeLogItem) => {
+            let listItems: ListItem[] = list["contents"];
+            let temp: ListItem[] = [];
+            for (let i = 0; i < listItems.length; i++) {
+                if (listItems[i]["id"] != listItemId) {
+                    temp.push(listItems[i]);
+                } else {
+                    isRemoved = true;
+                }
             }
-        })
-        list["contents"] = newAddListItem;
+            list["contents"] = temp;
+        });
+        if (!isRemoved) {
+            newDelListItemIds.push(listItemId);
+        }
     });
 
 
-    log["addLog"]["card"] = newAddCard;
-    log["addLog"]["list"] = addListList;
-    log["updateLog"]["card"] = updateCards;
-    log["updateLog"]["list"] = addListItemList;
-    console.log("printing addcard");
-    console.log(log["addLog"]["card"]);
-    console.log("printing addlist");
-    console.log(log["addLog"]["list"]);
-    console.log("printing updatecard");
-    console.log(log["updateLog"]["card"]);
-    console.log("printing updatelist");
-    console.log(log["updateLog"]["list"]);
-    console.log("printing deletecard");
-    console.log(log["deleteLog"]["card"]);
-    console.log("printing deletelistitems");
-    console.log(log["deleteLog"]["listItems"]);
+    log["addLog"]["card"] = newAddCards;
+    log["addLog"]["list"] = newAddListList;
+    log["updateLog"]["card"] = newUpdateCards;
+    log["updateLog"]["list"] = newAddListItemList;
+    log["deleteLog"]["card"] = newDelCards;
+    log["deleteLog"]["listItems"] = newDelListItemIds;
+    console.log("");
+    console.log(JSON.stringify(log,null,4));
 }
 
 
