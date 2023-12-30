@@ -31,64 +31,41 @@ function processChangeLog(log: ChangeLog) {
     let addListItemList: ListChangeLogItem[] = log["updateLog"]["list"];
     let addListList: ListChangeLogItem[] = log["addLog"]["list"];
 
-    let newDelCards: string[] = [];
-    let newDelListItemIds: string[] = [];
-    let newAddCards: CardChangeLog[] = [];
-    let newAddListList: ListChangeLogItem[] = [];
-    let newUpdateCards: CardChangeLog[] = [];
-    let newAddListItemList: ListChangeLogItem[] = [];
-
-    if (delCardIds.length == 0) {
-        newAddCards = addCardList;
-        newAddListList = addListList;
-        newUpdateCards = updateCards;
-        newAddListItemList = addListItemList; 
-    }
-
-
     let leakedListItemIds: string[] = [];
 
-    delCardIds.forEach((cardId: string) => {
+    for (let h = delCardIds.length-1; h >= 0; h--) {
         // Check add cards log, lists associated with the cards also need to be deleted
         // Check update cards log, lists associated with the cards also need to be deleted
         let isOverlap: boolean = false;
-        addCardList.forEach((card: CardChangeLog) => {
-            if (cardId == card["id"]) {
+        // fix by using reverse loops
+        for (let i = addCardList.length-1; i >= 0; i--) {
+            if (delCardIds[h] == addCardList[i]["id"]) {
                 isOverlap = true;
-            } else {
-                newAddCards.push(card);
+                addCardList.splice(i,1);
             }
-        });
-        addListList.forEach((list: ListChangeLogItem) => {
-            if (cardId == list["ownerId"]) {
-                isOverlap = true;
-            } else {
-                newAddListList.push(list);
-            }
-        });
-        updateCards.forEach((card: CardChangeLog) => {
-            if (cardId == card["id"]) {
-                isOverlap = true;
-            } else {
-                newUpdateCards.push(card);
-            }
-        });
-        addListItemList.forEach((list: ListChangeLogItem) => {
-            if (cardId == list["ownerId"]) {
-                isOverlap = true;
-                let idArr: string[] = [];
-                for (let i = 0; i < list["contents"].length; i++) {
-                    idArr.push(list["contents"][i]["id"]);
-                }
-                leakedListItemIds = [...leakedListItemIds,...idArr];
-            } else {
-                newAddListItemList.push(list);
-            }
-        });
-        if (!isOverlap) {
-            newDelCards.push(cardId);
         }
-    });
+        for (let j = addListList.length-1; j >= 0; j--) {
+            if (delCardIds[h] == addListList[j]["ownerId"]) {
+                isOverlap = true;
+                addListList.splice(j,1);
+            }
+        }
+        for (let k = updateCards.length-1; k >= 0; k--) {
+            if (delCardIds[h] == updateCards[k]["id"]) {
+                isOverlap = true;
+                updateCards.splice(k,1);
+            }
+        }
+        for (let l = addListItemList.length-1; l >= 0; l--) {
+            if (delCardIds[h] == addListItemList[l]["ownerId"]) {
+                isOverlap = true;
+                addListItemList.splice(l,1);
+            }
+        }
+        if (isOverlap) {
+            delCardIds.splice(h,1);
+        }
+    }
 
     // console.log("enter");
     // console.log(delListItemIds);
@@ -99,32 +76,25 @@ function processChangeLog(log: ChangeLog) {
     // console.log(delListItemIds);
     // console.log("exit");
     
-    delListItemIds.forEach((listItemId: string) => {
-        let isRemoved: boolean = false;
-        newAddListItemList.forEach((list: ListChangeLogItem) => {
-            let listItems: ListItem[] = list["contents"];
-            let temp: ListItem[] = [];
-            for (let i = 0; i < listItems.length; i++) {
-                if (listItems[i]["id"] != listItemId) {
-                    temp.push(listItems[i]);
-                } else {
-                    isRemoved = true;
-                }
-            }
-            list["contents"] = temp;
-        });
-        if (!isRemoved) {
-            newDelListItemIds.push(listItemId);
-        }
-    });
+    // delListItemIds.forEach((listItemId: string) => {
+    //     let isRemoved: boolean = false;
+    //     newAddListItemList.forEach((list: ListChangeLogItem) => {
+    //         let listItems: ListItem[] = list["contents"];
+    //         let temp: ListItem[] = [];
+    //         for (let i = 0; i < listItems.length; i++) {
+    //             if (listItems[i]["id"] != listItemId) {
+    //                 temp.push(listItems[i]);
+    //             } else {
+    //                 isRemoved = true;
+    //             }
+    //         }
+    //         list["contents"] = temp;
+    //     });
+    //     if (!isRemoved) {
+    //         newDelListItemIds.push(listItemId);
+    //     }
+    // });
 
-
-    log["addLog"]["card"] = newAddCards;
-    log["addLog"]["list"] = newAddListList;
-    log["updateLog"]["card"] = newUpdateCards;
-    log["updateLog"]["list"] = newAddListItemList;
-    log["deleteLog"]["card"] = newDelCards;
-    log["deleteLog"]["listItems"] = newDelListItemIds;
     console.log("");
     console.log(JSON.stringify(log,null,4));
 }
