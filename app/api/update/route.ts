@@ -1,4 +1,4 @@
-import { CardChangeLog, ChangeLog, ListChangeLogItem } from "@/interfaces/ChangeLogInterfaces";
+import { CardChangeLog, ChangeLog, ListChangeLogItem, ChangeCounts, AddLog, UpdateLog, DeleteLog } from "@/interfaces/ChangeLogInterfaces";
 import { ListQueryItem , ListItem} from "@/interfaces/ListInterfaces";
 import prisma from "@/lib/prisma"
 import { NextResponse } from "next/server";
@@ -7,18 +7,46 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
     const log: ChangeLog = await request.json();
     processChangeLog(log);
-    // console.log(constructPostListQuery(log["addLog"]["list"]));
-    // console.log(constructPostListItemQuery(log["updateLog"]["list"]));
-    // console.log(constructPatchCardQuery(log["updateLog"]["card"]));
-    // console.log(constructPostCardQuery(log["addLog"]["card"]));
-    // console.log(constructDeleteCardQuery(log["deleteLog"]["card"]));
-    // console.log(constructDeleteListItemQuery(log["deleteLog"]["listItems"]));
+    const addLog: AddLog = log["addLog"];
+    const updateLog: UpdateLog = log["updateLog"];
+    const deleteLog: DeleteLog = log["deleteLog"];
+    const addCardQuery = constructPostCardQuery(addLog["card"]);
+    const addListQuery = constructPostListQuery(addLog["list"]);
+    const addListItemQuery = constructPostListItemQuery(updateLog["list"]);
+    const updateCardQuery = constructPatchCardQuery(updateLog["card"]);
+    const deleteCardQuery = constructDeleteCardQuery(deleteLog["card"]);
+    const deleteListItemQuery = constructDeleteListItemQuery(deleteLog["listItems"]);
+    console.log(updateCardQuery);
+    let countObj: ChangeCounts = getCountsFromLog(log);
+    const [addCardCount, addListCount, addListItemCount, deleteCardCount, deleteListItemCount, updateCardCount] = await prisma.$transaction([
+        prisma.card.createMany(addCardQuery),
+        prisma.list.createMany(addListQuery),
+        prisma.listItem.createMany(addListItemQuery),
+        prisma.card.deleteMany(deleteCardQuery),
+        prisma.listItem.deleteMany(deleteListItemQuery),
+        prisma.$executeRawUnsafe(`${updateCardQuery}`),
+    ]);
+    console.log(addCardCount, addListCount, addListItemCount, updateCardCount, deleteCardCount, deleteListItemCount);
+    // TODO: Check the returned counts against the expected counts
+    // TODO: Perform another query and create an object with all the newly created items
     return NextResponse.json({log});
 }
 
 
 async function postToDatabase(log: ChangeLog) {
 
+}
+
+function getCountsFromLog(log: ChangeLog) {
+    let countObj: ChangeCounts = {
+        addCards: log["addLog"]["card"].length,
+        addLists: log["addLog"]["list"].length,
+        addListItems: log["updateLog"]["list"].length,
+        updateCards: log["updateLog"]["card"].length,
+        deleteCards: log["deleteLog"]["card"].length,
+        deleteListItems: log["deleteLog"]["listItems"].length
+    }
+    return countObj;
 }
 
 
@@ -84,27 +112,6 @@ function processChangeLog(log: ChangeLog) {
             delListItemIds.splice(n,1);
         }
     }
-    // delListItemIds.forEach((listItemId: string) => {
-    //     let isRemoved: boolean = false;
-    //     newAddListItemList.forEach((list: ListChangeLogItem) => {
-    //         let listItems: ListItem[] = list["contents"];
-    //         let temp: ListItem[] = [];
-    //         for (let i = 0; i < listItems.length; i++) {
-    //             if (listItems[i]["id"] != listItemId) {
-    //                 temp.push(listItems[i]);
-    //             } else {
-    //                 isRemoved = true;
-    //             }
-    //         }
-    //         list["contents"] = temp;
-    //     });
-    //     if (!isRemoved) {
-    //         newDelListItemIds.push(listItemId);
-    //     }
-    // });
-
-    console.log("");
-    console.log(JSON.stringify(log,null,4));
 }
 
 
@@ -172,7 +179,10 @@ function constructDeleteListItemQuery(listItems: string[]) {
 
 function constructPatchCardQuery(cards: CardChangeLog[]) {
     // A raw query is necessary here
-    let query: string = `UPDATE Card SET header = CASE `;
+    if (cards.length == 0) {
+        return "";
+    }
+    let query: string = `UPDATE Public."Card" SET header = CASE `;
     cards.forEach((card: CardChangeLog) => {
         query = query + `WHEN id = '${card["id"]}' THEN '${card["header"]}' `
     });

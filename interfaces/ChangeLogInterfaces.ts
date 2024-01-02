@@ -34,3 +34,12 @@ export interface CardChangeLog {
     header: string,
     footer: string
 }
+
+export interface ChangeCounts {
+    addCards: number,
+    addLists: number,
+    addListItems: number,
+    updateCards: number,
+    deleteCards: number,
+    deleteListItems: number,
+}

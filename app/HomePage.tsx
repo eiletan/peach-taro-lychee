@@ -303,13 +303,16 @@ export default function HomePage() {
         },
         body: JSON.stringify(changeLog)
       };
-      fetch('/api/update', requestObj);
+      const response = await fetch('/api/update', requestObj);
+      const responseJSON = await response.json();
+      console.log(responseJSON);
     }
+    // On successful update, clear changelog and change edit state
     setIsEdit(prevIsEdit => !prevIsEdit);
   }
 
   
-
+  // TODO: Sanitize the inputs for card headers, empty string, null, and undefined is NOT ALLOWED
   return (
     <div className="home-page-container">
         <Button text={isEdit ? "Stop Editing And Save Changes" : "Edit"} bgcolor="bg-blue-700" color="text-slate-50" onClick={() => stopEditingAndSaveChanges()}></Button>
