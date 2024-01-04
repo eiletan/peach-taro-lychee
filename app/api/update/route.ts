@@ -16,20 +16,22 @@ export async function POST(request: Request) {
     const updateCardQuery = constructPatchCardQuery(updateLog["card"]);
     const deleteCardQuery = constructDeleteCardQuery(deleteLog["card"]);
     const deleteListItemQuery = constructDeleteListItemQuery(deleteLog["listItems"]);
-    console.log(updateCardQuery);
     let countObj: ChangeCounts = getCountsFromLog(log);
-    const [addCardCount, addListCount, addListItemCount, deleteCardCount, deleteListItemCount, updateCardCount] = await prisma.$transaction([
-        prisma.card.createMany(addCardQuery),
-        prisma.list.createMany(addListQuery),
-        prisma.listItem.createMany(addListItemQuery),
-        prisma.card.deleteMany(deleteCardQuery),
-        prisma.listItem.deleteMany(deleteListItemQuery),
-        prisma.$executeRawUnsafe(`${updateCardQuery}`),
-    ]);
-    console.log(addCardCount, addListCount, addListItemCount, updateCardCount, deleteCardCount, deleteListItemCount);
+    try {
+        const [addCardCount, addListCount, addListItemCount, deleteCardCount, deleteListItemCount, updateCardCount] = await prisma.$transaction([
+            prisma.card.createMany(addCardQuery),
+            prisma.list.createMany(addListQuery),
+            prisma.listItem.createMany(addListItemQuery),
+            prisma.card.deleteMany(deleteCardQuery),
+            prisma.listItem.deleteMany(deleteListItemQuery),
+            prisma.$executeRawUnsafe(`${updateCardQuery}`),
+        ]);
+    } catch (error: any) {
+        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again'}, {status: 400});
+    }
     // TODO: Check the returned counts against the expected counts
     // TODO: Perform another query and create an object with all the newly created items
-    return NextResponse.json({log});
+    return NextResponse.json({log}, {status: 200});
 }
 
 
