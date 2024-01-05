@@ -1,4 +1,4 @@
-import { CardChangeLog, ChangeLog, ListChangeLogItem, ChangeCounts, AddLog, UpdateLog, DeleteLog } from "@/interfaces/ChangeLogInterfaces";
+import { CardChangeLog, ChangeLog, ListChangeLogItem, AddLog, UpdateLog, DeleteLog, deleteListItem } from "@/interfaces/ChangeLogInterfaces";
 import { ListQueryItem , ListItem} from "@/interfaces/ListInterfaces";
 import prisma from "@/lib/prisma"
 import { NextResponse } from "next/server";
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const updateCardQuery = constructPatchCardQuery(updateLog["card"]);
     const deleteCardQuery = constructDeleteCardQuery(deleteLog["card"]);
     const deleteListItemQuery = constructDeleteListItemQuery(deleteLog["listItems"]);
-    let countObj: ChangeCounts = getCountsFromLog(log);
+    const cardIds: string[] = getAllCardIds(log);
     try {
         const [addCardCount, addListCount, addListItemCount, deleteCardCount, deleteListItemCount, updateCardCount] = await prisma.$transaction([
             prisma.card.createMany(addCardQuery),
@@ -27,35 +27,83 @@ export async function POST(request: Request) {
             prisma.$executeRawUnsafe(`${updateCardQuery}`),
         ]);
     } catch (error: any) {
-        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again'}, {status: 400});
+        console.log("Error saving changes to database");
+        console.log(error);
+        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again.'}, {status: 400});
     }
-    // TODO: Check the returned counts against the expected counts
-    // TODO: Perform another query and create an object with all the newly created items
-    return NextResponse.json({log}, {status: 200});
-}
-
-
-async function postToDatabase(log: ChangeLog) {
-
-}
-
-function getCountsFromLog(log: ChangeLog) {
-    let countObj: ChangeCounts = {
-        addCards: log["addLog"]["card"].length,
-        addLists: log["addLog"]["list"].length,
-        addListItems: log["updateLog"]["list"].length,
-        updateCards: log["updateLog"]["card"].length,
-        deleteCards: log["deleteLog"]["card"].length,
-        deleteListItems: log["deleteLog"]["listItems"].length
+    // If POST was successful, update the card footers of each card that had changes
+    try {
+        const updateCards = await prisma.card.updateMany(constructUpdateCardFooterQuery(cardIds));
+    } catch (error: any) {
+        console.log("Error updating update times");
+        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again.'},{status: 500});
     }
-    return countObj;
+    // TODO: Perform another query and return all cards that were updated
+    let cards: any;
+    try {
+        cards = await prisma.card.findMany(constructFindCardsQuery(cardIds));
+    } catch (error: any) {
+        console.log("Error returning cards");
+        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again.'},{status: 500});
+    }
+    return NextResponse.json({cards}, {status: 200});
 }
 
+
+function getAllCardIds(log: ChangeLog) {
+    let add: AddLog = log["addLog"];
+    let update: UpdateLog = log["updateLog"];
+    let deleted: DeleteLog = log["deleteLog"]; 
+    let cardIds: Set<string> = new Set<string>();
+    add["card"].forEach((card: CardChangeLog) => {
+        cardIds.add(card["id"]);
+    });
+    update["card"].forEach((card: CardChangeLog) => {
+        cardIds.add(card["id"]);
+    })
+    update["list"].forEach((list: ListChangeLogItem) => {
+        if (list["ownerId"] != null) {
+            cardIds.add(list["ownerId"]);
+        }
+    });
+    deleted["listItems"].forEach((listItem: deleteListItem) => {
+        if (listItem["cardId"] != null) {
+            cardIds.add(listItem["cardId"]);
+        }
+    })
+    let ret: string[] = Array.from(cardIds.values());
+    return ret;
+}
+
+function constructFindCardsQuery(cardIds: string[]) {
+    let prismaQuery: any = {
+        where: {
+            id: {
+                in: cardIds
+            },
+        }
+    }
+    return prismaQuery;
+}
+
+function constructUpdateCardFooterQuery(cardIds: string[]) {
+    let prismaQuery: any = {
+        where: {
+            id: {
+                in: cardIds
+            },
+        },
+        data: {
+            footer: "Last Updated"
+        }
+    }
+    return prismaQuery;
+}
 
 function processChangeLog(log: ChangeLog) {
     // Remove entries that are both in the delete and add log
     let delCardIds: string[] = log["deleteLog"]["card"];
-    let delListItemIds: string[] = log["deleteLog"]["listItems"];
+    let delListItemIds: deleteListItem[] = log["deleteLog"]["listItems"];
     let updateCards: CardChangeLog[] = log["updateLog"]["card"];
     let addCardList: CardChangeLog[] = log["addLog"]["card"];
     let addListItemList: ListChangeLogItem[] = log["updateLog"]["list"];
@@ -100,7 +148,7 @@ function processChangeLog(log: ChangeLog) {
         for (let o = addListItemList.length-1; o >= 0; o--) {
             let listItems: ListItem[] = addListItemList[o]["contents"];
             for (let p = listItems.length-1; p >= 0; p--) {
-                if (listItems[p]["id"] == delListItemIds[n]) {
+                if (listItems[p]["id"] == delListItemIds[n]["id"]) {
                     isRemoved = true;
                     listItems.splice(p,1);
                     break;
@@ -167,11 +215,15 @@ function constructDeleteCardQuery(cardIds: string[]) {
 }
 
 
-function constructDeleteListItemQuery(listItems: string[]) {
+function constructDeleteListItemQuery(listItems: deleteListItem[]) {
+    let ids: string[] = [];
+    listItems.forEach((item: deleteListItem) => {
+        ids.push(item["id"]);
+    });
     let prismaQuery: any = {
         where: {
             id: {
-                in: listItems
+                in: ids
             }
         }
     }

@@ -9,7 +9,7 @@ export interface ChangeLog {
 
 export interface DeleteLog {
     card: string[],
-    listItems: string[]
+    listItems: deleteListItem[]
 }
 
 
@@ -35,11 +35,9 @@ export interface CardChangeLog {
     footer: string
 }
 
-export interface ChangeCounts {
-    addCards: number,
-    addLists: number,
-    addListItems: number,
-    updateCards: number,
-    deleteCards: number,
-    deleteListItems: number,
+
+export interface deleteListItem {
+    id: string,
+    listId: string,
+    cardId: string | null
 }

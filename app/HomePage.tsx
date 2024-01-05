@@ -5,14 +5,14 @@ import sectionData from "@/assets/sections.json"
 import CardContainer from "@/components/CardContainer"
 import List from '@/components/List'
 import Button from '@/components/Button';
-import { generateUID } from '@/util/util';
+import { convertTimestamp, generateUID } from '@/util/util';
 import { Request } from '@/interfaces/RequestInterfaces';
 import { ListItem, ListObj } from '@/interfaces/ListInterfaces';
 
 
 import "../css/App.css";
 import "../css/HomePage.css";
-import { CardChangeLog, ChangeLog, ListChangeLogItem } from '@/interfaces/ChangeLogInterfaces';
+import { CardChangeLog, ChangeLog, ListChangeLogItem, deleteListItem } from '@/interfaces/ChangeLogInterfaces';
 
 export default function HomePage() {
 
@@ -54,7 +54,7 @@ export default function HomePage() {
       let cardObj: Request = {
         id: card["id"],
         header: card["header"],
-        footer: card["footer"],
+        footer: card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`,
         extraClass: "card-content",
         content: null,
       };
@@ -150,7 +150,12 @@ export default function HomePage() {
             if (item["id"] !== id) {
               newListList.push(item);
             } else {
-              changeLog["deleteLog"]["listItems"].push(item["id"]);
+              let deleteListItem: deleteListItem = {
+                id: item["id"],
+                listId: list["id"],
+                cardId: list["ownerId"]
+              }
+              changeLog["deleteLog"]["listItems"].push(deleteListItem);
             }
           }
           list["listItems"] = newListList;
@@ -306,8 +311,19 @@ export default function HomePage() {
       const response = await fetch('/api/update', requestObj);
       const responseJSON = await response.json();
       console.log(responseJSON);
+      console.log(response.status);
+      const cards = responseJSON["cards"];
+      let newCardList: Request[] = [...requests];
+      cards.forEach((card: any) => {
+        for (let i = 0; i < requests.length; i++) {
+          if (card["id"] == requests[i]["id"]) {
+            requests[i]["footer"] = card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`;
+            break;
+          }
+        }
+      });
+      setRequests(newCardList);
     }
-    // On successful update, clear changelog and change edit state
     setIsEdit(prevIsEdit => !prevIsEdit);
   }
 
