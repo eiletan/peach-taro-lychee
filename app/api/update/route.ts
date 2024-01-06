@@ -29,14 +29,15 @@ export async function POST(request: Request) {
     } catch (error: any) {
         console.log("Error saving changes to database");
         console.log(error);
-        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again.'}, {status: 400});
+        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please reload the page and try again.'}, {status: 400});
     }
     // If POST was successful, update the card footers of each card that had changes
     try {
         const updateCards = await prisma.card.updateMany(constructUpdateCardFooterQuery(cardIds));
     } catch (error: any) {
         console.log("Error updating update times");
-        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again.'},{status: 500});
+        console.log(error);
+        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please reload the page and try again.'},{status: 500});
     }
     // TODO: Perform another query and return all cards that were updated
     let cards: any;
@@ -44,7 +45,8 @@ export async function POST(request: Request) {
         cards = await prisma.card.findMany(constructFindCardsQuery(cardIds));
     } catch (error: any) {
         console.log("Error returning cards");
-        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please try again.'},{status: 500});
+        console.log(error);
+        return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please reload the page and try again.'},{status: 500});
     }
     return NextResponse.json({cards}, {status: 200});
 }

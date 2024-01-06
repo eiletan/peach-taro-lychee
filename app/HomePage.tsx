@@ -312,19 +312,25 @@ export default function HomePage() {
       const responseJSON = await response.json();
       console.log(responseJSON);
       console.log(response.status);
-      const cards = responseJSON["cards"];
-      let newCardList: Request[] = [...requests];
-      cards.forEach((card: any) => {
-        for (let i = 0; i < requests.length; i++) {
-          if (card["id"] == requests[i]["id"]) {
-            requests[i]["footer"] = card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`;
-            break;
+      if (response.status === 200) {
+        const cards = responseJSON["cards"];
+        let newCardList: Request[] = [...requests];
+        cards.forEach((card: any) => {
+          for (let i = 0; i < requests.length; i++) {
+            if (card["id"] == requests[i]["id"]) {
+              requests[i]["footer"] = card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`;
+              break;
+            }
           }
-        }
-      });
-      setRequests(newCardList);
+        });
+        setRequests(newCardList);
+        setIsEdit(prevIsEdit => !prevIsEdit);
+        setChangeLog(emptyChangeLog);
+      }
+    } else {
+      setIsEdit(prevIsEdit => !prevIsEdit);
     }
-    setIsEdit(prevIsEdit => !prevIsEdit);
+    
   }
 
   
