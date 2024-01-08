@@ -3,7 +3,6 @@ import styles from './page.module.css'
 import HomePage from './HomePage'
 import prisma from '@/lib/prisma';
 
-
 async function getCards() {
   const cards = await prisma.card.findMany({
     select: {

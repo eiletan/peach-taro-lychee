@@ -17,6 +17,7 @@ async function getCards() {
         footer: true,
         updatedAt: true,
         list: true,
+        type: true
       }
     });
     return cards;

@@ -8,3 +8,9 @@ export interface CardContainerProps {
     footer?: string
     extraClass?: string,
 }
+
+
+export enum CardType {
+    section = "SECTION",
+    content = "CONTENT"
+}

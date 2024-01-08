@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         console.log(error);
         return NextResponse.json({error: error.code, message: 'An error was encountered while saving your changes. Please reload the page and try again.'},{status: 500});
     }
-    return NextResponse.json({cards}, {status: 200});
+    return NextResponse.json({cards}, {status: 201});
 }
 
 

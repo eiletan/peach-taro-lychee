@@ -8,11 +8,14 @@ import Button from '@/components/Button';
 import { convertTimestamp, generateUID } from '@/util/util';
 import { Request } from '@/interfaces/RequestInterfaces';
 import { ListItem, ListObj } from '@/interfaces/ListInterfaces';
+import toast, {Toaster} from "react-hot-toast"
 
 
 import "../css/App.css";
 import "../css/HomePage.css";
 import { CardChangeLog, ChangeLog, ListChangeLogItem, deleteListItem } from '@/interfaces/ChangeLogInterfaces';
+import { CardType } from '@/interfaces/CardContainerInterfaces';
+import { sections } from '@/interfaces/HomePageInterfaces';
 
 export default function HomePage() {
 
@@ -35,7 +38,24 @@ export default function HomePage() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [lists, setLists] = useState<ListObj[]>([]);
   const [changeLog,setChangeLog] = useState<ChangeLog>(emptyChangeLog);
-  const sections: any = sectionData;
+  const [sections, setSections] = useState<sections>({
+    Requests: {
+      id: "dummyvalue",
+      header: "Requests",
+      footer: "",
+      extraClass: "",
+      content: null,
+      type: CardType.section
+    },
+    Notes: {
+      id: "dummyvalue2",
+      header: "Notes",
+      footer: "",
+      extraClass: "",
+      content: null,
+      type: CardType.section
+    }
+  });
 
   const list1: Element | JSX.Element = <List ownerId={"1234567"} id={"1235141abc"} isEdit={isEdit} list={lists?.[0]?.["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
   const flexx: any = <div className="grid grid-cols-1 grid-container">{list1}</div>;
@@ -49,16 +69,47 @@ export default function HomePage() {
     const lists = await fetchLists();
     let newCardList: Request[] = [];
     let newList: ListObj[] = [];
+    let sections: any = {}
     // Process cards data fetched from the database
     cards["cards"].forEach((card: any) => {
-      let cardObj: Request = {
-        id: card["id"],
-        header: card["header"],
-        footer: card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`,
-        extraClass: "card-content",
-        content: null,
-      };
-      newCardList.push(cardObj);
+      if (card["type"] == CardType.section) {
+        switch(card["header"]) {
+          case "Requests": {
+            let cardObj: Request = {
+              id: card["id"],
+              header: card["header"],
+              footer: "",
+              extraClass: "",
+              content: null,
+              type: card["type"]
+            }
+            sections["Requests"] = cardObj;
+            break;
+          }
+          case "Notes": {
+            let cardObj: Request = {
+              id: card["id"],
+              header: card["header"],
+              footer: card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`,
+              extraClass: "",
+              content: null,
+              type: card["type"]
+            }
+            sections["Notes"] = cardObj;
+            break;
+          }
+        }
+      } else {
+        let cardObj: Request = {
+          id: card["id"],
+          header: card["header"],
+          footer: card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`,
+          extraClass: "card-content",
+          content: null,
+          type: card["type"]
+        };
+        newCardList.push(cardObj);
+      }
     });
     // Process lists data fetched from the database
     lists["lists"].forEach((list: any) => {
@@ -72,6 +123,7 @@ export default function HomePage() {
     });
     setRequests(newCardList);
     setLists(newList);
+    setSections(sections);
   }
 
   async function fetchCards() {
@@ -119,7 +171,6 @@ export default function HomePage() {
           changeLogList.push(item);
         }
         setChangeLog(changeLog);
-        console.log(changeLog);
         break;
       }
     }
@@ -143,7 +194,6 @@ export default function HomePage() {
     let newList = [...lists];
     for (let list of newList) {
         if (list["id"] == ownerId) {
-          console.log(list);
           let listItems: ListItem[] = list["listItems"];
           let newListList = [];
           for (let item of listItems) {
@@ -188,7 +238,6 @@ export default function HomePage() {
           changeLogRequestList.push(cardLog);
         }
         setChangeLog(changeLog);
-        console.log(changeLog);
         break;
       }
     }
@@ -208,13 +257,11 @@ export default function HomePage() {
       }
     }
     let newListList = [];
-    console.log(lists);
     for (let list of lists) {
       if (list["ownerId"] !== card?.["id"]) {
         newListList.push(list);
       }
     }
-    console.log(changeLog);
     setChangeLog(changeLog);
     setLists(newListList);
     setRequests(newList);
@@ -228,7 +275,8 @@ export default function HomePage() {
       header: "New Card",
       footer: "Last Updated",
       extraClass: "card-content",
-      content: null
+      content: null,
+      type: CardType.content
     }
     let newList: Request[] = [...requests,newCard];
     let newCardList: ListObj = {
@@ -252,32 +300,38 @@ export default function HomePage() {
     cardAddLog.push(addCard);
     listAddLog.push(addList);
     setChangeLog(changeLog);
-    console.log(changeLog);
     setRequests(newList);
     setLists([...lists,newCardList]);
   }
 
   function generateContentCardsHelper() {
     return requests.map((val: Request) => {
-      let listObj: ListObj = {
-        ownerId: "",
-        id: "",
-        listItems: [],
-        currentNewItem: ""
-      };
-      for (let list of lists) {
-        if (list["ownerId"] == val["id"]) {
-          listObj = list;
-        }
-      }
-      const list: Element | JSX.Element = <List ownerId={val["id"]} id={listObj["id"]} isEdit={isEdit} list={listObj["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
-      const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
+      const flexx: any = returnListElementForOwnerId(val["id"]);
       return <div className="flex flex-col flex-auto" key={val.id}>
             <div className="flex-auto">
               <CardContainer key={val.id} id={val.id} header={val.header} content={flexx} footer={val.footer} extraClass={val.extraClass} updateHeaderFunction={updateHeader} deleteFunction={deleteCard} isEdit={isEdit}></CardContainer>
             </div>
           </div>
     });
+  }
+
+
+  function returnListElementForOwnerId(ownerId: string) {
+    let listObj: ListObj = {
+      ownerId: "",
+      id: "",
+      listItems: [],
+      currentNewItem: ""
+    };
+    for (let list of lists) {
+      if (list["ownerId"] == ownerId) {
+        listObj = list;
+        break;
+      }
+    }
+    const list: Element | JSX.Element = <List ownerId={ownerId} id={listObj["id"]} isEdit={isEdit} list={listObj["listItems"]} handleSubmit={addListItem} onChange={listOnChange} delete={deleteListItem}></List>;
+    const flexx: any = <div className="grid grid-cols-1 grid-container">{list}</div>
+    return flexx;
   }
 
   function generateContentCards() {
@@ -300,7 +354,6 @@ export default function HomePage() {
   
   async function stopEditingAndSaveChanges() {
     if (isEdit) {
-      console.log(changeLog);
       let requestObj = {
         method: "POST",
         header: {
@@ -310,9 +363,7 @@ export default function HomePage() {
       };
       const response = await fetch('/api/update', requestObj);
       const responseJSON = await response.json();
-      console.log(responseJSON);
-      console.log(response.status);
-      if (response.status === 200) {
+      if (response.status === 201) {
         const cards = responseJSON["cards"];
         let newCardList: Request[] = [...requests];
         cards.forEach((card: any) => {
@@ -320,12 +371,17 @@ export default function HomePage() {
             if (card["id"] == requests[i]["id"]) {
               requests[i]["footer"] = card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`;
               break;
+            } else if (card["id"] == sections["Notes"]["id"]) {
+              sections["Notes"]["footer"] = card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`;
             }
           }
         });
         setRequests(newCardList);
         setIsEdit(prevIsEdit => !prevIsEdit);
         setChangeLog(emptyChangeLog);
+        toast.success("Changes saved successfully!");
+      } else {
+        toast.error(responseJSON.message);
       }
     } else {
       setIsEdit(prevIsEdit => !prevIsEdit);
@@ -339,8 +395,9 @@ export default function HomePage() {
     <div className="home-page-container">
         <Button text={isEdit ? "Stop Editing And Save Changes" : "Edit"} bgcolor="bg-blue-700" color="text-slate-50" onClick={() => stopEditingAndSaveChanges()}></Button>
         <p className="text home-title">Peach Taro Lychee</p>
-        <CardContainer key={"123456"} id={"123456"} header={sections[0]["header"]} footer={sections[0]["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>
-        <CardContainer key={"1234567"} id={"1234567"} header={sections[1]["header"]} footer={sections[1]["footer"]} content={null} isEdit={false}></CardContainer>
+        <CardContainer key={sections["Requests"]["id"]} id={sections["Requests"]["id"]} header={sections["Requests"]["header"]} footer={sections["Requests"]["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>
+        <CardContainer key={sections["Notes"]["id"]} id={sections["Notes"]["id"]} header={sections["Notes"]["header"]} footer={sections["Notes"]["footer"]} content={returnListElementForOwnerId(sections["Notes"]["id"])} isEdit={false}></CardContainer>
+        <Toaster toastOptions={{position: "top-right"}} />
     </div>
     );
 }

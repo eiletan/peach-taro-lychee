@@ -11,6 +11,7 @@ model Card {
   id          String    @id
   header      String
   footer      String
+  type        CardType  @default(CONTENT)
   createdAt   DateTime  @default(now()) @map(name: "created_at")
   updatedAt   DateTime  @updatedAt @map(name: "updated_at")
   list        List[]
@@ -33,4 +34,10 @@ model ListItem {
   createdAt       DateTime  @default(now()) @map(name: "created_at")
   updatedAt       DateTime  @updatedAt @map(name: "updated_at")
   content         String
+}
+
+
+enum CardType {
+  SECTION
+  CONTENT
 }
