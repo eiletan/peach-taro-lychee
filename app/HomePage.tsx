@@ -16,6 +16,7 @@ import "../css/HomePage.css";
 import { CardChangeLog, ChangeLog, ListChangeLogItem, deleteListItem } from '@/interfaces/ChangeLogInterfaces';
 import { CardType } from '@/interfaces/CardContainerInterfaces';
 import { sections } from '@/interfaces/HomePageInterfaces';
+import BlockingSpinner from '@/components/BlockingSpinner';
 
 export default function HomePage() {
 
@@ -38,6 +39,8 @@ export default function HomePage() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [lists, setLists] = useState<ListObj[]>([]);
   const [changeLog,setChangeLog] = useState<ChangeLog>(emptyChangeLog);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadingMessage, setLoadingMessage] = useState<string | undefined> ();
   const [sections, setSections] = useState<sections>({
     Requests: {
       id: "dummyvalue",
@@ -65,6 +68,7 @@ export default function HomePage() {
   },[]);
 
   async function fetchData() {
+    setIsLoading(true);
     const cards = await fetchCards();
     const lists = await fetchLists();
     let newCardList: Request[] = [];
@@ -124,6 +128,7 @@ export default function HomePage() {
     setRequests(newCardList);
     setLists(newList);
     setSections(sections);
+    setIsLoading(false);
   }
 
   async function fetchCards() {
@@ -354,6 +359,8 @@ export default function HomePage() {
   
   async function stopEditingAndSaveChanges() {
     if (isEdit) {
+      setIsLoading(true);
+      setLoadingMessage("Saving your changes... Please do not reload the page");
       let requestObj = {
         method: "POST",
         header: {
@@ -380,8 +387,10 @@ export default function HomePage() {
         setIsEdit(prevIsEdit => !prevIsEdit);
         setChangeLog(emptyChangeLog);
         toast.success("Changes saved successfully!");
+        setIsLoading(false);
       } else {
         toast.error(responseJSON.message);
+        setIsLoading(false);
       }
     } else {
       setIsEdit(prevIsEdit => !prevIsEdit);
@@ -393,6 +402,7 @@ export default function HomePage() {
   // TODO: Sanitize the inputs for card headers, empty string, null, and undefined is NOT ALLOWED
   return (
     <div className="home-page-container">
+        <BlockingSpinner isActive={isLoading} message={loadingMessage}></BlockingSpinner>
         <Button text={isEdit ? "Stop Editing And Save Changes" : "Edit"} bgcolor="bg-blue-700" color="text-slate-50" onClick={() => stopEditingAndSaveChanges()}></Button>
         <p className="text home-title">Peach Taro Lychee</p>
         <CardContainer key={sections["Requests"]["id"]} id={sections["Requests"]["id"]} header={sections["Requests"]["header"]} footer={sections["Requests"]["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>
