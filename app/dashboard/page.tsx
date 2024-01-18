@@ -17,7 +17,7 @@ import { CardType } from '@/interfaces/CardContainerInterfaces';
 import { sections } from '@/interfaces/HomePageInterfaces';
 import BlockingSpinner from '@/components/BlockingSpinner';
 
-export default function page() {
+export default function Page() {
 
   const emptyChangeLog: ChangeLog = {
     deleteLog: {
