@@ -11,6 +11,11 @@ export async function GET() {
 
 async function getCards() {
     const cards = await prisma.card.findMany({
+      orderBy: [
+        {
+          header: "asc"
+        }
+      ],
       select: {
         id: true,
         header: true,
