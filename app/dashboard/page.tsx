@@ -131,13 +131,13 @@ export default function Page() {
   }
 
   async function fetchCards() {
-    const res = await fetch('/api/get-cards');
+    const res = await fetch('/api/get-cards', {cache: 'no-store'});
     const cardjson = await res.json();
     return cardjson;
   }
 
   async function fetchLists() {
-    const res = await fetch('/api/get-lists');
+    const res = await fetch('/api/get-lists', {cache: 'no-store'});
     const listsjson = await res.json();
     return listsjson;
   }
@@ -365,7 +365,7 @@ export default function Page() {
         header: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(changeLog)
+        body: JSON.stringify(changeLog),
       };
       const response = await fetch('/api/update', requestObj);
       const responseJSON = await response.json();
