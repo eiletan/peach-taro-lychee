@@ -17,7 +17,7 @@ export async function authenticate(
           return 'Something went wrong.';
       }
     } else {
-      return 'Something went wrong';
+      return 'Something went wrong. Please check your credentials and try again.';
     }
   }
 }
