@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import HomePage from './HomePage'
 import LoginPage from './LoginPage';
 import prisma from '@/lib/prisma';
 
@@ -19,6 +18,5 @@ export default async function Home() {
   const cards = await getCards();
   return (
     <LoginPage></LoginPage>
-    // <HomePage></HomePage>
 );
 }
