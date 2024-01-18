@@ -1,10 +1,22 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import HomePage from './HomePage'
+import LoginPage from './login/page';
+import prisma from '@/lib/prisma';
 
-export default function Home() {
- 
+async function getCards() {
+  const cards = await prisma.card.findMany({
+    select: {
+      id: true,
+      header: true,
+      updatedAt: true
+    }
+  });
+  return cards;
+}
+
+export default async function Home() {
+  const cards = await getCards();
   return (
-    <HomePage></HomePage>
+    <LoginPage></LoginPage>
 );
 }

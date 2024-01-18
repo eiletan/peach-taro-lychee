@@ -35,8 +35,7 @@ export default function CardContainer(props: CardContainerProps) {
                 </div>
                 <div className="card-body card-container-body">
                     {props.content ? props.content : "No card content provided"}
-                </div>
-                {props.footer ? 
+                </div> 
                 <div className="card-footer card-container-footer rounded-bl-lg rounded-br-lg border-t-2 border-zinc-500">
                     {props.isEdit ? 
                     <Button text="Delete" bgcolor="bg-red-700" color="text-slate-50" onClick={() => props.deleteFunction(props.id)}></Button>
@@ -45,8 +44,6 @@ export default function CardContainer(props: CardContainerProps) {
                         {props.footer}
                     </span>}
                 </div> 
-                : 
-                null}
             </div>
         </div>
     );

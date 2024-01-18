@@ -11,14 +11,19 @@ export interface ListObj {
     currentNewItem: string
 }
 
+export interface ListQueryItem {
+    ownerId: string | null | undefined;
+    id: string;
+}
+
 
 export interface ListProps {
     ownerId: string | null,
     id: string,
     list: ListItem[] | null,
     isEdit: boolean,
-    handleSubmit: any,
-    onChange: any,
-    delete: any,
+    handleSubmit: Function,
+    onChange: Function,
+    delete: Function,
     extraClass?: string
 }
