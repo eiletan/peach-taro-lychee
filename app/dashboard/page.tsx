@@ -370,19 +370,7 @@ export default function Page() {
       const response = await fetch('/api/update', requestObj);
       const responseJSON = await response.json();
       if (response.status === 201) {
-        const cards = responseJSON["cards"];
-        let newCardList: Request[] = [...requests];
-        cards.forEach((card: any) => {
-          for (let i = 0; i < requests.length; i++) {
-            if (card["id"] == requests[i]["id"]) {
-              requests[i]["footer"] = card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`;
-              break;
-            } else if (card["id"] == sections["Notes"]["id"]) {
-              sections["Notes"]["footer"] = card["footer"] + ` ${convertTimestamp(card["updatedAt"])}`;
-            }
-          }
-        });
-        setRequests(newCardList);
+        fetchData();
         setIsEdit(prevIsEdit => !prevIsEdit);
         setChangeLog(emptyChangeLog);
         toast.success("Changes saved successfully!");
