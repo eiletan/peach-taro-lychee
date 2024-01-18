@@ -8,7 +8,7 @@ import { convertTimestamp, generateUID } from '@/util/util';
 import { Request } from '@/interfaces/RequestInterfaces';
 import { ListItem, ListObj } from '@/interfaces/ListInterfaces';
 import toast, {Toaster} from "react-hot-toast"
-
+import { signOut } from '@/auth';
 
 import "../../css/App.css";
 import "../../css/HomePage.css";
@@ -397,10 +397,12 @@ export default function Page() {
     
   }
 
+
   
   return (
     <div className="home-page-container">
         <BlockingSpinner isActive={isLoading} message={loadingMessage}></BlockingSpinner>
+        <Button extraClass="absolute top-0 left-0" text="Log out" bgcolor="bg-red-500" color="text-slate-50" onClick={() => signOut()}></Button>
         <Button text={isEdit ? "Stop Editing And Save Changes" : "Edit"} bgcolor="bg-blue-700" color="text-slate-50" onClick={() => stopEditingAndSaveChanges()}></Button>
         <p className="text home-title">Peach Taro Lychee</p>
         <CardContainer key={sections["Requests"]["id"]} id={sections["Requests"]["id"]} header={sections["Requests"]["header"]} footer={sections["Requests"]["footer"]} content={generateContentCards()} isEdit={false}></CardContainer>

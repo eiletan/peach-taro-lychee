@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import LoginPage from './LoginPage';
+import LoginPage from './login/page';
 import prisma from '@/lib/prisma';
 
 async function getCards() {
