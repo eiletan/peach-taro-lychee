@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import {useState, useEffect} from 'react';
-import sectionData from "@/assets/sections.json"
 import CardContainer from "@/components/CardContainer"
 import List from '@/components/List'
 import Button from '@/components/Button';
@@ -11,14 +10,14 @@ import { ListItem, ListObj } from '@/interfaces/ListInterfaces';
 import toast, {Toaster} from "react-hot-toast"
 
 
-import "../css/App.css";
-import "../css/HomePage.css";
+import "../../css/App.css";
+import "../../css/HomePage.css";
 import { CardChangeLog, ChangeLog, ListChangeLogItem, deleteListItem } from '@/interfaces/ChangeLogInterfaces';
 import { CardType } from '@/interfaces/CardContainerInterfaces';
 import { sections } from '@/interfaces/HomePageInterfaces';
 import BlockingSpinner from '@/components/BlockingSpinner';
 
-export default function HomePage() {
+export default function Page() {
 
   const emptyChangeLog: ChangeLog = {
     deleteLog: {
