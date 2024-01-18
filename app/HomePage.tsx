@@ -399,7 +399,6 @@ export default function HomePage() {
   }
 
   
-  // TODO: Sanitize the inputs for card headers, empty string, null, and undefined is NOT ALLOWED
   return (
     <div className="home-page-container">
         <BlockingSpinner isActive={isLoading} message={loadingMessage}></BlockingSpinner>

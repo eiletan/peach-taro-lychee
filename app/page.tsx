@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import styles from './page.module.css'
 import HomePage from './HomePage'
+import LoginPage from './LoginPage';
 import prisma from '@/lib/prisma';
 
 async function getCards() {
@@ -17,6 +18,7 @@ async function getCards() {
 export default async function Home() {
   const cards = await getCards();
   return (
-    <HomePage></HomePage>
+    <LoginPage></LoginPage>
+    // <HomePage></HomePage>
 );
 }
