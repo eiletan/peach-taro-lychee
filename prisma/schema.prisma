@@ -38,7 +38,7 @@ model List {
 
 model ListItem {
   id              String    @id
-  listItemOwner   List?     @relation(fields: [ownerId], references: [id])
+  listItemOwner   List?     @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId         String?
   createdAt       DateTime  @default(now()) @map(name: "created_at")
   updatedAt       DateTime  @updatedAt @map(name: "updated_at")
